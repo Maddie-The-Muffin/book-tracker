@@ -36,11 +36,13 @@ export async function updateBook(formData: FormData) {
     throw new Error("Invalid status");
   }
 
+  const rating = status === "want_to_read" ? null : ratingRaw ? Number(ratingRaw) : null;
+
   await db
     .update(books)
     .set({
       status: status as (typeof statusValues)[number],
-      rating: ratingRaw ? Number(ratingRaw) : null,
+      rating,
       notes: notes || null,
       finishedAt: status === "finished" ? new Date() : null,
     })
