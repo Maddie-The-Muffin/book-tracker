@@ -1,6 +1,8 @@
 import Image from "next/image";
+import Form from "next/form";
 import { searchOpenLibrary } from "@/lib/open-library";
 import { addBook } from "@/lib/actions";
+import { SearchButton } from "./search-button";
 
 export default async function AddBookPage(props: PageProps<"/add">) {
   const { q } = await props.searchParams;
@@ -12,7 +14,7 @@ export default async function AddBookPage(props: PageProps<"/add">) {
     <div className="space-y-6">
       <h1 className="text-xl font-semibold">Add a book</h1>
 
-      <form action="/add" className="flex gap-2">
+      <Form action="/add" className="flex gap-2">
         <input
           type="text"
           name="q"
@@ -20,13 +22,8 @@ export default async function AddBookPage(props: PageProps<"/add">) {
           placeholder="Search by title or author..."
           className="flex-1 rounded border border-neutral-300 p-2"
         />
-        <button
-          type="submit"
-          className="rounded bg-neutral-900 px-4 py-2 text-sm text-white hover:bg-neutral-700"
-        >
-          Search
-        </button>
-      </form>
+        <SearchButton />
+      </Form>
 
       {query && results.length === 0 && (
         <p className="text-sm text-neutral-500">No results for &ldquo;{query}&rdquo;.</p>
