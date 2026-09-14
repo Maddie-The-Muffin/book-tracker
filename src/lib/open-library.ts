@@ -20,8 +20,21 @@ export async function searchOpenLibrary(query: string): Promise<OpenLibrarySearc
   url.searchParams.set("limit", "10");
   url.searchParams.set("fields", "key,title,author_name,cover_i");
 
-  const res = await fetch(url, { next: { revalidate: 0 } });
-  if (!res.ok) {
+  const headers = new Headers({
+    "User-Agent": "BookTracker/0.1a (maddie.law19@gmail.com)"
+  });
+  const options = {
+    method: 'GET',
+    headers: headers,
+    next: {revalidate: 0}
+  };
+
+  console.log("url: " + url);
+
+  try {
+    const res = await fetch(url, options);
+    if (!res.ok) {
+    console.log("Womp womp womp woooomp");
     throw new Error(`Open Library search failed: ${res.status}`);
   }
 
@@ -35,4 +48,10 @@ export async function searchOpenLibrary(query: string): Promise<OpenLibrarySearc
       ? `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`
       : null,
   }));
+  }
+  catch (e) {
+    console.log("NO");
+    return [];
+  }
+  
 }
