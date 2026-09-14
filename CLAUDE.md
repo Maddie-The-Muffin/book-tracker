@@ -29,3 +29,7 @@ Next.js App Router (v16) + React 19 + TypeScript + Tailwind v4, backed by Neon P
 - `src/lib/format.ts` — shared display mappings (e.g. `statusLabels`) kept next to the schema types they format.
 - Route params/search params are typed with the generated `PageProps<"/route">` / `LayoutProps<"/">` helpers (see e.g. `src/app/shelf/[id]/page.tsx`, `src/app/shelf/page.tsx`) rather than hand-written prop types — both `params` and `searchParams` are async and must be awaited.
 - Path alias `@/*` resolves to `src/*` (see `tsconfig.json`).
+
+## Coding instructions
+
+- When writing new code, add explanatory comments to blocks to make it easier to understand each change. (Applies to new and existing files)
