@@ -50,6 +50,7 @@ export async function updateBook(formData: FormData) {
 
   revalidatePath("/shelf");
   revalidatePath(`/shelf/${id}`);
+  redirect("/shelf?updated=1");
 }
 
 export async function deleteBook(formData: FormData) {

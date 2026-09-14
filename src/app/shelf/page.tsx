@@ -3,15 +3,17 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { books, statusValues, type Status } from "@/db/schema";
 import { statusLabels } from "@/lib/format";
+import { UpdateSuccessDialog } from "./UpdateSuccessDialog";
 
 function isStatus(value: string | undefined): value is Status {
   return !!value && (statusValues as readonly string[]).includes(value);
 }
 
 export default async function ShelfPage(props: PageProps<"/shelf">) {
-  const { status: statusParam } = await props.searchParams;
+  const { status: statusParam, updated } = await props.searchParams;
   const status = Array.isArray(statusParam) ? statusParam[0] : statusParam;
   const activeStatus = isStatus(status) ? status : undefined;
+  const justUpdated = (Array.isArray(updated) ? updated[0] : updated) === "1";
 
   const shelf = activeStatus
     ? await db.select().from(books).where(eq(books.status, activeStatus)).orderBy(desc(books.createdAt))
@@ -19,6 +21,7 @@ export default async function ShelfPage(props: PageProps<"/shelf">) {
 
   return (
     <div className="space-y-6">
+      {justUpdated && <UpdateSuccessDialog />}
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Shelf</h1>
         <Link href="/add" className="text-sm text-blue-600 hover:underline">
