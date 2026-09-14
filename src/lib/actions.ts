@@ -25,7 +25,14 @@ export async function addBook(formData: FormData) {
   redirect(`/shelf/${book.id}`);
 }
 
-export async function updateBook(formData: FormData) {
+export type UpdateBookState = {
+  error: string | null;
+};
+
+export async function updateBook(
+  _prevState: UpdateBookState,
+  formData: FormData
+): Promise<UpdateBookState> {
   const id = formData.get("id") as string;
   const status = formData.get("status") as string;
   const ratingRaw = formData.get("rating") as string;
@@ -38,15 +45,21 @@ export async function updateBook(formData: FormData) {
 
   const rating = status === "want_to_read" ? null : ratingRaw ? Number(ratingRaw) : null;
 
-  await db
-    .update(books)
-    .set({
-      status: status as (typeof statusValues)[number],
-      rating,
-      notes: notes || null,
-      finishedAt: status === "finished" ? new Date() : null,
-    })
-    .where(eq(books.id, id));
+  try {
+    await db
+      .update(books)
+      .set({
+        status: status as (typeof statusValues)[number],
+        rating,
+        notes: notes || null,
+        finishedAt: status === "finished" ? new Date() : null,
+      })
+      .where(eq(books.id, id));
+  } catch {
+    return {
+      error: "Oops! We couldn't save your changes. Please check your connection and try again.",
+    };
+  }
 
   revalidatePath("/shelf");
   revalidatePath(`/shelf/${id}`);

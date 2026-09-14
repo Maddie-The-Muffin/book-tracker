@@ -1,17 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { statusValues, type Book, type Status } from "@/db/schema";
 import { statusLabels } from "@/lib/format";
-import { updateBook } from "@/lib/actions";
+import { updateBook, type UpdateBookState } from "@/lib/actions";
+
+const initialState: UpdateBookState = { error: null };
 
 export function BookForm({ book }: { book: Book }) {
   const [status, setStatus] = useState<Status>(book.status);
   const canRate = status !== "want_to_read";
+  const [state, formAction, isPending] = useActionState(updateBook, initialState);
 
   return (
-    <form action={updateBook} className="space-y-4 rounded-lg border border-neutral-200 bg-white p-4">
+    <form
+      action={formAction}
+      onReset={(e) => e.preventDefault()}
+      className="space-y-4 rounded-lg border border-neutral-200 bg-white p-4"
+    >
       <input type="hidden" name="id" value={book.id} />
+
+      {state.error && (
+        <p className="rounded border border-red-200 bg-red-50 p-2 text-sm text-red-700">
+          {state.error}
+        </p>
+      )}
 
       <div>
         <label className="mb-1 block text-sm font-medium" htmlFor="status">
@@ -72,9 +85,10 @@ export function BookForm({ book }: { book: Book }) {
 
       <button
         type="submit"
-        className="rounded bg-neutral-900 px-4 py-2 text-sm text-white hover:bg-neutral-700"
+        disabled={isPending}
+        className="rounded bg-neutral-900 px-4 py-2 text-sm text-white hover:bg-neutral-700 disabled:cursor-not-allowed disabled:bg-neutral-400"
       >
-        Save changes
+        {isPending ? "Saving..." : "Save changes"}
       </button>
     </form>
   );
