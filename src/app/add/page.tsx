@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Form from "next/form";
-import { searchOpenLibrary } from "@/lib/open-library";
+import { searchOpenLibrary, errorReturn } from "@/lib/open-library";
 import { addBook } from "@/lib/actions";
 import { SearchButton } from "./search-button";
 
@@ -8,7 +8,7 @@ export default async function AddBookPage(props: PageProps<"/add">) {
   const { q } = await props.searchParams;
   const query = Array.isArray(q) ? q[0] : q;
 
-  const results = query ? await searchOpenLibrary(query) : [];
+  const results = query ? await searchOpenLibrary(query) : {result: [], error: null};
 
   return (
     <div className="space-y-6">
@@ -24,13 +24,17 @@ export default async function AddBookPage(props: PageProps<"/add">) {
         />
         <SearchButton />
       </Form>
+      
+      {/* todo: if the query returns with an error (eg connection error) display that to the user instead of "no results found"*/}
 
-      {query && results.length === 0 && (
+      {query && results.error === null && results.result.length === 0 &&  (
         <p className="text-sm text-neutral-500">No results for &ldquo;{query}&rdquo;.</p>
       )}
 
+      
       <ul className="space-y-2">
-        {results.map((result) => (
+        {results.error ? <p className="text-sm text-neutral-500">Oops! There was a problem retrieving results. Please try again (and maybe check your internet connection?)</p> 
+        : results.result.map((result) => (
           <li
             key={result.openLibraryId}
             className="flex items-center gap-3 rounded-lg border border-neutral-200 bg-white p-3"
