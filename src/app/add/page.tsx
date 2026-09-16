@@ -1,14 +1,32 @@
 import Image from "next/image";
 import Form from "next/form";
+import { inArray } from "drizzle-orm";
+import { db } from "@/db";
+import { books } from "@/db/schema";
 import { searchOpenLibrary, errorReturn } from "@/lib/open-library";
 import { addBook } from "@/lib/actions";
 import { SearchButton } from "./search-button";
+import { AddButton } from "./add-button";
 
 export default async function AddBookPage(props: PageProps<"/add">) {
   const { q } = await props.searchParams;
   const query = Array.isArray(q) ? q[0] : q;
 
   const results = query ? await searchOpenLibrary(query) : {result: [], error: null};
+
+  // Look up which of the search results are already on the shelf so we can
+  // disable adding them again instead of letting duplicates slip through.
+  const openLibraryIds = results.result.map((result) => result.openLibraryId);
+  const existingIds = new Set(
+    openLibraryIds.length
+      ? (
+          await db
+            .select({ openLibraryId: books.openLibraryId })
+            .from(books)
+            .where(inArray(books.openLibraryId, openLibraryIds))
+        ).map((row) => row.openLibraryId)
+      : []
+  );
 
   return (
     <div className="space-y-6">
@@ -54,18 +72,19 @@ export default async function AddBookPage(props: PageProps<"/add">) {
               <p className="font-medium">{result.title}</p>
               <p className="text-sm text-neutral-500">by {result.author}</p>
             </div>
-            <form action={addBook}>
-              <input type="hidden" name="openLibraryId" value={result.openLibraryId} />
-              <input type="hidden" name="title" value={result.title} />
-              <input type="hidden" name="author" value={result.author} />
-              <input type="hidden" name="coverUrl" value={result.coverUrl ?? ""} />
-              <button
-                type="submit"
-                className="rounded border border-neutral-300 px-3 py-1 text-sm hover:bg-neutral-100"
-              >
-                Add
-              </button>
-            </form>
+            {existingIds.has(result.openLibraryId) ? (
+              <span className="rounded border border-neutral-200 px-3 py-1 text-sm text-neutral-400">
+                Already added
+              </span>
+            ) : (
+              <form action={addBook}>
+                <input type="hidden" name="openLibraryId" value={result.openLibraryId} />
+                <input type="hidden" name="title" value={result.title} />
+                <input type="hidden" name="author" value={result.author} />
+                <input type="hidden" name="coverUrl" value={result.coverUrl ?? ""} />
+                <AddButton />
+              </form>
+            )}
           </li>
         ))}
       </ul>

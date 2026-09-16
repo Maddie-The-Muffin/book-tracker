@@ -16,6 +16,19 @@ export async function addBook(formData: FormData) {
     throw new Error("Missing required book fields");
   }
 
+  // Guard against duplicates: if this book is already on the shelf (e.g. from
+  // a repeat click that slipped past the disabled button), send the user to
+  // the existing entry instead of inserting a second copy.
+  const [existing] = await db
+    .select({ id: books.id })
+    .from(books)
+    .where(eq(books.openLibraryId, openLibraryId))
+    .limit(1);
+
+  if (existing) {
+    redirect(`/shelf/${existing.id}`);
+  }
+
   const [book] = await db
     .insert(books)
     .values({ openLibraryId, title, author, coverUrl: coverUrl || null })
