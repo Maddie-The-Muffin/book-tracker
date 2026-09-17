@@ -48,10 +48,10 @@ export default async function Home() {
               <li key={book.id}>
                 <Link
                   href={`/shelf/${book.id}`}
-                  className="block rounded-lg border border-neutral-200 bg-white p-3 hover:border-neutral-400"
+                  className="flex block rounded-lg border border-neutral-200 bg-white p-3 hover:border-neutral-400"
                 >
-                  <span className="font-medium">{book.title}</span>{" "}
-                  <span className="text-neutral-500">by {book.author}</span>
+                  <span className="max-w-7/10 font-medium truncate">{book.title}</span>{" "}
+                  <span className="text-neutral-500 px-[5px] truncate">by {book.author}</span>
                 </Link>
               </li>
             ))}
@@ -71,10 +71,10 @@ export default async function Home() {
               <li key={book.id}>
                 <Link
                   href={`/shelf/${book.id}`}
-                  className="block rounded-lg border border-neutral-200 bg-white p-3 hover:border-neutral-400"
+                  className="flex block rounded-lg border border-neutral-200 bg-white p-3 hover:border-neutral-400"
                 >
-                  <span className="font-medium">{book.title}</span>{" "}
-                  <span className="text-neutral-500">by {book.author}</span>
+                  <span className="max-w-7/10 font-medium truncate">{book.title}</span>{" "}
+                  <span className="text-neutral-500 px-[5px] truncate">by {book.author}</span>
                   {book.rating ? (
                     <span className="ml-2 text-amber-500">{"★".repeat(book.rating)}</span>
                   ) : null}

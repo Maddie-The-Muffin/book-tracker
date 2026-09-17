@@ -51,9 +51,9 @@ export default async function ShelfPage(props: PageProps<"/shelf">) {
                 href={`/shelf/${book.id}`}
                 className="flex items-center justify-between rounded-lg border border-neutral-200 bg-white p-3 hover:border-neutral-400"
               >
-                <div>
-                  <span className="font-medium">{book.title}</span>{" "}
-                  <span className="text-neutral-500">by {book.author}</span>
+                <div className="flex max-w-9/10">
+                  <span className="max-w-7/10 font-medium truncate">{book.title}</span>{" "}
+                  <span className="text-neutral-500 px-[5px] truncate">by {book.author}</span>
                 </div>
                 <span className="text-xs text-neutral-500">{statusLabels[book.status]}</span>
               </Link>
