@@ -1,10 +1,43 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Body copy stays on Inter; headings/brand text use the Fraunces serif for
+     the "cafe hygge" cozy-reading feel. */
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-fraunces);
+
+  /* Cafe Hygge palette: warm cream/terracotta/sage instead of stock grays. */
+  --color-cream: #faf3ea;
+  --color-surface: #fffdf9;
+  --color-ink: #4a3f35;
+  --color-ink-muted: #8a7a6b;
+  --color-border: #e8dcc9;
+
+  --color-terracotta: #c97c5d;
+  --color-terracotta-hover: #b56a4c;
+
+  --color-sage: #a8b896;
+  --color-sage-tint: #eaf0e3;
+  --color-sage-dark: #5c6b4b;
+
+  --color-caramel: #e8a87c;
+  --color-caramel-tint: #f7e4d3;
+
+  /* Warm stand-in for error/destructive states, in place of cool reds. */
+  --color-brick: #9c4a3d;
+  --color-brick-tint: #f6e6e1;
 }
 
 body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Soft, warm-toned card shadow (light through a cafe window) instead of
+   Tailwind's default neutral-gray shadow. */
+.shadow-warm {
+  box-shadow:
+    0 8px 24px -8px rgba(74, 63, 53, 0.16),
+    0 1px 2px rgba(74, 63, 53, 0.08);
 }

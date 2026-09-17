@@ -3,6 +3,7 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { books } from "@/db/schema";
 import { statusLabels } from "@/lib/format";
+import { Card, CardLink } from "@/components/ui/Card";
 
 export default async function Home() {
   const [currentlyReading, recentlyFinished, total] = await Promise.all([
@@ -18,9 +19,9 @@ export default async function Home() {
 
   if (total.length === 0) {
     return (
-      <div className="text-center text-neutral-500">
+      <div className="text-center text-ink-muted">
         <p className="mb-4">Your shelf is empty.</p>
-        <Link href="/add" className="text-blue-600 hover:underline">
+        <Link href="/add" className="text-terracotta hover:underline">
           Add your first book
         </Link>
       </div>
@@ -39,20 +40,17 @@ export default async function Home() {
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg font-semibold">Currently reading</h2>
+        <h2 className="mb-3 font-display text-lg font-semibold">Currently reading</h2>
         {currentlyReading.length === 0 ? (
-          <p className="text-sm text-neutral-500">Nothing in progress right now.</p>
+          <p className="text-sm text-ink-muted">Nothing in progress right now.</p>
         ) : (
           <ul className="space-y-2">
             {currentlyReading.map((book) => (
               <li key={book.id}>
-                <Link
-                  href={`/shelf/${book.id}`}
-                  className="flex block rounded-lg border border-neutral-200 bg-white p-3 hover:border-neutral-400"
-                >
+                <CardLink href={`/shelf/${book.id}`} className="flex p-3">
                   <span className="max-w-7/10 font-medium truncate">{book.title}</span>{" "}
-                  <span className="text-neutral-500 px-[5px] truncate">by {book.author}</span>
-                </Link>
+                  <span className="text-ink-muted px-[5px] truncate">by {book.author}</span>
+                </CardLink>
               </li>
             ))}
           </ul>
@@ -60,25 +58,22 @@ export default async function Home() {
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg font-semibold">Recently finished</h2>
+        <h2 className="mb-3 font-display text-lg font-semibold">Recently finished</h2>
         {recentlyFinished.length === 0 ? (
-          <p className="text-sm text-neutral-500">
+          <p className="text-sm text-ink-muted">
             {statusLabels.finished} shelf is empty so far.
           </p>
         ) : (
           <ul className="space-y-2">
             {recentlyFinished.map((book) => (
               <li key={book.id}>
-                <Link
-                  href={`/shelf/${book.id}`}
-                  className="flex block rounded-lg border border-neutral-200 bg-white p-3 hover:border-neutral-400"
-                >
+                <CardLink href={`/shelf/${book.id}`} className="flex p-3">
                   <span className="max-w-7/10 font-medium truncate">{book.title}</span>{" "}
-                  <span className="text-neutral-500 px-[5px] truncate">by {book.author}</span>
+                  <span className="text-ink-muted px-[5px] truncate">by {book.author}</span>
                   {book.rating ? (
-                    <span className="ml-2 text-amber-500">{"★".repeat(book.rating)}</span>
+                    <span className="ml-2 text-caramel">{"★".repeat(book.rating)}</span>
                   ) : null}
-                </Link>
+                </CardLink>
               </li>
             ))}
           </ul>
@@ -90,9 +85,9 @@ export default async function Home() {
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-lg border border-neutral-200 bg-white p-4">
-      <div className="text-2xl font-semibold">{value}</div>
-      <div className="text-sm text-neutral-500">{label}</div>
-    </div>
+    <Card>
+      <div className="font-display text-2xl font-semibold">{value}</div>
+      <div className="text-sm text-ink-muted">{label}</div>
+    </Card>
   );
 }

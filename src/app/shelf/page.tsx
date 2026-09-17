@@ -4,6 +4,9 @@ import { db } from "@/db";
 import { books, statusValues, type Status } from "@/db/schema";
 import { statusLabels } from "@/lib/format";
 import { UpdateSuccessDialog } from "./UpdateSuccessDialog";
+import { CardLink } from "@/components/ui/Card";
+import { StatusPill } from "@/components/ui/StatusPill";
+import { FilterTab } from "@/components/ui/FilterTab";
 
 function isStatus(value: string | undefined): value is Status {
   return !!value && (statusValues as readonly string[]).includes(value);
@@ -23,8 +26,8 @@ export default async function ShelfPage(props: PageProps<"/shelf">) {
     <div className="space-y-6">
       {justUpdated && <UpdateSuccessDialog />}
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Shelf</h1>
-        <Link href="/add" className="text-sm text-blue-600 hover:underline">
+        <h1 className="font-display text-xl font-semibold">Shelf</h1>
+        <Link href="/add" className="text-sm text-terracotta hover:underline">
           + Add a book
         </Link>
       </div>
@@ -42,38 +45,22 @@ export default async function ShelfPage(props: PageProps<"/shelf">) {
       </div>
 
       {shelf.length === 0 ? (
-        <p className="text-sm text-neutral-500">No books here yet.</p>
+        <p className="text-sm text-ink-muted">No books here yet.</p>
       ) : (
         <ul className="space-y-2">
           {shelf.map((book) => (
             <li key={book.id}>
-              <Link
-                href={`/shelf/${book.id}`}
-                className="flex items-center justify-between rounded-lg border border-neutral-200 bg-white p-3 hover:border-neutral-400"
-              >
+              <CardLink href={`/shelf/${book.id}`} className="flex items-center justify-between p-3">
                 <div className="flex max-w-9/10">
                   <span className="max-w-7/10 font-medium truncate">{book.title}</span>{" "}
-                  <span className="text-neutral-500 px-[5px] truncate">by {book.author}</span>
+                  <span className="text-ink-muted px-[5px] truncate">by {book.author}</span>
                 </div>
-                <span className="text-xs text-neutral-500">{statusLabels[book.status]}</span>
-              </Link>
+                <StatusPill status={book.status} />
+              </CardLink>
             </li>
           ))}
         </ul>
       )}
     </div>
-  );
-}
-
-function FilterTab({ href, label, active }: { href: string; label: string; active: boolean }) {
-  return (
-    <Link
-      href={href}
-      className={`rounded-full px-3 py-1 ${
-        active ? "bg-neutral-900 text-white" : "bg-white text-neutral-600 border border-neutral-200"
-      }`}
-    >
-      {label}
-    </Link>
   );
 }

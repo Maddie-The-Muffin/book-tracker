@@ -21,16 +21,16 @@ export default async function BookDetailPage(props: PageProps<"/shelf/[id]">) {
             alt={`Cover of ${book.title}`}
             width={96}
             height={144}
-            className="rounded border border-neutral-200 object-cover"
+            className="rounded-lg border border-border object-cover shadow-warm"
           />
         ) : (
-          <div className="flex h-36 w-24 items-center justify-center rounded border border-neutral-200 bg-neutral-100 text-xs text-neutral-400">
+          <div className="flex h-36 w-24 items-center justify-center rounded-lg border border-border bg-cream text-xs text-ink-muted">
             No cover
           </div>
         )}
         <div>
-          <h1 className="text-xl font-semibold">{book.title}</h1>
-          <p className="text-neutral-500">by {book.author}</p>
+          <h1 className="font-display text-xl font-semibold">{book.title}</h1>
+          <p className="text-ink-muted">by {book.author}</p>
         </div>
       </div>
 
@@ -38,7 +38,7 @@ export default async function BookDetailPage(props: PageProps<"/shelf/[id]">) {
 
       <form action={deleteBook}>
         <input type="hidden" name="id" value={book.id} />
-        <button type="submit" className="text-sm text-red-600 hover:underline">
+        <button type="submit" className="text-sm text-brick hover:underline">
           Remove from shelf
         </button>
       </form>

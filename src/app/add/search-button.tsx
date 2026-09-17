@@ -1,20 +1,17 @@
 "use client";
 
 import { useFormStatus } from "react-dom";
+import { Button } from "@/components/ui/Button";
 
 export function SearchButton() {
   const { pending } = useFormStatus();
 
   return (
-    <button
-      type="submit"
-      disabled={pending}
-      className="flex items-center gap-2 rounded bg-neutral-900 px-4 py-2 text-sm text-white hover:bg-neutral-700 disabled:opacity-70"
-    >
+    <Button type="submit" disabled={pending} className="flex items-center gap-2">
       {pending && (
-        <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+        <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-surface/40 border-t-surface" />
       )}
       {pending ? "Searching..." : "Search"}
-    </button>
+    </Button>
   );
 }

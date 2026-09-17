@@ -33,7 +33,7 @@ export function UpdateSuccessDialog() {
   return (
     <div className="fixed inset-x-0 top-4 z-50 flex justify-center px-4">
       <div
-        className={`rounded-lg bg-neutral-900 px-4 py-2 text-sm text-white shadow-lg transition-all duration-[400ms] ease-in ${
+        className={`rounded-lg bg-ink px-4 py-2 text-sm text-surface shadow-lg transition-all duration-[400ms] ease-in ${
           leaving ? "-translate-y-20 opacity-0" : "translate-y-0 opacity-100"
         }`}
       >
