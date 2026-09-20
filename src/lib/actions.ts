@@ -1,6 +1,6 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
@@ -57,6 +57,7 @@ export async function updateBook(
   }
 
   const rating = status === "want_to_read" ? null : ratingRaw ? Number(ratingRaw) : null;
+  const currentDate : Date = new Date();
 
   try {
     await db
@@ -68,6 +69,12 @@ export async function updateBook(
         finishedAt: status === "finished" ? new Date() : null,
       })
       .where(eq(books.id, id));
+
+      if (status === "reading") {
+        await db.update(books).set({
+          startedAt: currentDate
+        }).where(and(eq(books.id, id), isNull(books.startedAt)))
+      }
   } catch {
     return {
       error: "Oops! We couldn't save your changes. Please check your connection and try again.",
