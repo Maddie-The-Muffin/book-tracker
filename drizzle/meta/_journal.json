@@ -8,6 +8,13 @@
       "when": 1788290068496,
       "tag": "0000_many_smasher",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790027459480,
+      "tag": "0001_orange_bastion",
+      "breakpoints": true
     }
   ]
 }

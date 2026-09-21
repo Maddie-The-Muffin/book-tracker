@@ -4,7 +4,7 @@ import { and, eq, isNull } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
-import { books, statusValues } from "@/db/schema";
+import { books, bookReflections, statusValues } from "@/db/schema";
 
 export async function addBook(formData: FormData) {
   const openLibraryId = formData.get("openLibraryId") as string;
@@ -91,6 +91,69 @@ export async function updateBook(
   revalidatePath("/shelf");
   revalidatePath(`/shelf/${id}`);
   redirect("/shelf?updated=1");
+}
+
+export type SaveReflectionState = {
+  error: string | null;
+  success?: boolean;
+};
+
+// Saves post-finish reflection answers. Kept separate from updateBook so the
+// reflection form can be submitted independently of the main edit form.
+export async function saveReflection(
+  _prevState: SaveReflectionState,
+  formData: FormData
+): Promise<SaveReflectionState> {
+  const bookId = formData.get("bookId") as string;
+  if (!bookId) throw new Error("Missing book id");
+
+  const favoritePart = formData.get("favoritePart") as string;
+  const leastFavoritePart = formData.get("leastFavoritePart") as string;
+  const wouldRecommendRaw = formData.get("wouldRecommend") as string;
+  // HTML form values are always strings; "" means "no answer" (null).
+  const wouldRecommend = wouldRecommendRaw === "" ? null : wouldRecommendRaw === "true";
+
+  try {
+    await db
+      .insert(bookReflections)
+      .values({
+        bookId,
+        favoritePart: favoritePart || null,
+        leastFavoritePart: leastFavoritePart || null,
+        wouldRecommend,
+        skipped: false, // saving real answers un-skips a previously-skipped row
+      })
+      .onConflictDoUpdate({
+        target: bookReflections.bookId,
+        set: {
+          favoritePart: favoritePart || null,
+          leastFavoritePart: leastFavoritePart || null,
+          wouldRecommend,
+          skipped: false,
+        },
+      });
+  } catch {
+    return { error: "Oops! We couldn't save your reflection. Please try again." };
+  }
+
+  // Reflection only shows on the book detail page, so no /shelf list revalidation is needed.
+  revalidatePath(`/shelf/${bookId}`);
+  return { error: null, success: true };
+}
+
+// Marks the reflection as declined without requiring any answers. A plain
+// action (no pending/error UI needed) like deleteBook, rather than the
+// useActionState shape saveReflection uses.
+export async function skipReflection(formData: FormData) {
+  const bookId = formData.get("bookId") as string;
+  if (!bookId) throw new Error("Missing book id");
+
+  await db
+    .insert(bookReflections)
+    .values({ bookId, skipped: true })
+    .onConflictDoUpdate({ target: bookReflections.bookId, set: { skipped: true } });
+
+  revalidatePath(`/shelf/${bookId}`);
 }
 
 export async function deleteBook(formData: FormData) {

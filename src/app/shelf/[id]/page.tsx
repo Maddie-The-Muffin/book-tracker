@@ -2,15 +2,21 @@ import Image from "next/image";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { db } from "@/db";
-import { books } from "@/db/schema";
+import { books, bookReflections } from "@/db/schema";
 import { deleteBook } from "@/lib/actions";
 import { BookForm } from "./BookForm";
+import { Reflection } from "./Reflection";
 
 export default async function BookDetailPage(props: PageProps<"/shelf/[id]">) {
   const { id } = await props.params;
 
   const [book] = await db.select().from(books).where(eq(books.id, id));
   if (!book) notFound();
+
+  const [reflection] = await db
+    .select()
+    .from(bookReflections)
+    .where(eq(bookReflections.bookId, id));
 
   return (
     <div className="space-y-6">
@@ -35,6 +41,10 @@ export default async function BookDetailPage(props: PageProps<"/shelf/[id]">) {
       </div>
 
       <BookForm book={book} />
+
+      {book.status === "finished" && (
+        <Reflection bookId={book.id} reflection={reflection ?? null} />
+      )}
 
       <form action={deleteBook}>
         <input type="hidden" name="id" value={book.id} />
