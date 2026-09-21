@@ -102,3 +102,10 @@ export async function deleteBook(formData: FormData) {
   revalidatePath("/shelf");
   redirect("/shelf");
 }
+
+export async function clearShelf() {
+  await db.delete(books);
+
+  revalidatePath("/shelf");
+  redirect("/shelf");
+}

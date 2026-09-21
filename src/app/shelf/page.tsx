@@ -7,6 +7,7 @@ import { UpdateSuccessDialog } from "./UpdateSuccessDialog";
 import { CardLink } from "@/components/ui/Card";
 import { StatusPill } from "@/components/ui/StatusPill";
 import { FilterTab } from "@/components/ui/FilterTab";
+import { clearShelf } from "@/lib/actions";
 
 function isStatus(value: string | undefined): value is Status {
   return !!value && (statusValues as readonly string[]).includes(value);
@@ -30,6 +31,11 @@ export default async function ShelfPage(props: PageProps<"/shelf">) {
         <Link href="/add" className="text-sm text-terracotta hover:underline">
           + Add a book
         </Link>
+        <form action={clearShelf}>
+          <button type="submit" className="text-sm text-brick hover:underline cursor-pointer">
+            Clear shelf
+          </button>
+        </form>
       </div>
 
       <div className="flex gap-2 text-sm">
