@@ -66,14 +66,21 @@ export async function updateBook(
         status: status as (typeof statusValues)[number],
         rating,
         notes: notes || null,
-        finishedAt: status === "finished" ? new Date() : null,
       })
       .where(eq(books.id, id));
 
+      // update book's started date the first time it has been started only
       if (status === "reading") {
         await db.update(books).set({
           startedAt: currentDate
         }).where(and(eq(books.id, id), isNull(books.startedAt)))
+      }
+
+      // update book's finished date the first time it has been finished only
+      if (status === "finished") {
+        await db.update(books).set({
+          finishedAt: currentDate
+        }).where(and(eq(books.id, id), isNull(books.finishedAt)))
       }
   } catch {
     return {
