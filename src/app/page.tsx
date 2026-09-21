@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { books } from "@/db/schema";
 import { statusLabels } from "@/lib/format";
 import { Card, CardLink } from "@/components/ui/Card";
+import { ReadingStats } from "@/components/ui/ReadingStats";
 
 export default async function Home() {
   const [currentlyReading, recentlyFinished, total] = await Promise.all([
@@ -39,6 +40,7 @@ export default async function Home() {
         />
       </section>
 
+      {/* Section: Currently reading */}
       <section>
         <h2 className="mb-3 font-display text-lg font-semibold">Currently reading</h2>
         {currentlyReading.length === 0 ? (
@@ -57,6 +59,8 @@ export default async function Home() {
         )}
       </section>
 
+      {/* Section: Finished books ("Recently finished")
+      possible todo: change this/add a filter to show only books within a certain timeframe */}
       <section>
         <h2 className="mb-3 font-display text-lg font-semibold">Recently finished</h2>
         {recentlyFinished.length === 0 ? (
@@ -78,6 +82,13 @@ export default async function Home() {
             ))}
           </ul>
         )}
+      </section>
+
+      {/* Section: Reading stats summary */}
+      <section>
+        <h2 className="mb-3 font-display text-lg font-semibold">Your reading stats</h2>
+        <p className="text-sm text-ink-muted">Look at all the books you've read!</p>
+        <ReadingStats allBooks={total} />
       </section>
     </div>
   );
