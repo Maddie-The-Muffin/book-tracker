@@ -1,7 +1,9 @@
 import { type Book } from "@/db/schema";
 
 export function ReadingStats({allBooks} : {allBooks : Book[]}) {
-    const paragraphStyle: string = "text-sm text-ink-muted";
+    const paragraphStyle: string = "text-md text-ink-muted";
+    const spanStyle = "text-md text-ink font-bold";
+    const divStyle: string = "rounded-xl border border-border bg-surface p-4 shadow-warm";
     const millisecondsInADay: number = 86_400_000;
 
     const finishedBooks = allBooks.filter((book) => {
@@ -63,12 +65,11 @@ export function ReadingStats({allBooks} : {allBooks : Book[]}) {
         <div>
             {finishedBooks === null || finishedBooks.length === 0 ?
             <p className={paragraphStyle}>Try finishing some books and see what shows up here!</p> :
-            (<div>
-                <p>stats!!</p>
-                <p className={paragraphStyle}>You have read {totalBooksRead} {totalBooksRead === 1 ? "book" : "books"} this year.</p>
-                <p className={paragraphStyle}>The average time it takes you to finish a book is {avgTime.time} {" "}
-                    {avgTime.time === 1 ? /* remove trailing 's' */avgTime.format.split("s")[0] : avgTime.format}.</p>
-                <p className={paragraphStyle}>The fastest book you read is {getFastestRead()}.</p>
+            (<div className={divStyle}>
+                <p className={paragraphStyle}>You have read <span className={spanStyle}>{totalBooksRead} {totalBooksRead === 1 ? "book" : "books"}</span> this year.</p>
+                <p className={paragraphStyle}>The average time it takes you to finish a book is <span className={spanStyle}>{avgTime.time} {" "}
+                    {avgTime.time === 1 ? /* remove trailing 's' */avgTime.format.split("s")[0] : avgTime.format}.</span></p>
+                <p className={paragraphStyle}>The fastest book you read is <span className={spanStyle}>{getFastestRead()}</span>.</p>
             </div>) 
             }
         </div>

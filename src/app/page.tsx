@@ -87,7 +87,6 @@ export default async function Home() {
       {/* Section: Reading stats summary */}
       <section>
         <h2 className="mb-3 font-display text-lg font-semibold">Your reading stats</h2>
-        <p className="text-sm text-ink-muted">Look at all the books you've read!</p>
         <ReadingStats allBooks={total} />
       </section>
     </div>
