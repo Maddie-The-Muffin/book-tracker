@@ -6,7 +6,10 @@ import { statusLabels } from "@/lib/format";
 import { Card, CardLink } from "@/components/ui/Card";
 import { ReadingStats } from "@/components/ui/ReadingStats";
 
-export default async function Home() {
+export default async function Home(props: PageProps<"/">) {
+  const { statusperiod: timeQuery } = await props.searchParams;
+  console.log("quewy " + timeQuery);
+
   const [currentlyReading, recentlyFinished, total] = await Promise.all([
     db.select().from(books).where(eq(books.status, "reading")).orderBy(desc(books.createdAt)),
     db
@@ -87,7 +90,7 @@ export default async function Home() {
       {/* Section: Reading stats summary */}
       <section>
         <h2 className="mb-3 font-display text-lg font-semibold">Your reading stats</h2>
-        <ReadingStats allBooks={total} />
+        <ReadingStats allBooks={total} timeQuery={timeQuery} />
       </section>
     </div>
   );

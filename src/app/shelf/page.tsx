@@ -10,11 +10,13 @@ import { FilterTab } from "@/components/ui/FilterTab";
 import { clearShelf } from "@/lib/actions";
 
 function isStatus(value: string | undefined): value is Status {
+  // !!value is equivalent to value !== undefined and rules out empty strings as well
   return !!value && (statusValues as readonly string[]).includes(value);
 }
 
 export default async function ShelfPage(props: PageProps<"/shelf">) {
   const { status: statusParam, updated } = await props.searchParams;
+  console.log("params: " + statusParam);
   const status = Array.isArray(statusParam) ? statusParam[0] : statusParam;
   const activeStatus = isStatus(status) ? status : undefined;
   const justUpdated = (Array.isArray(updated) ? updated[0] : updated) === "1";

@@ -5,3 +5,6 @@ export const statusLabels: Record<Status, string> = {
   reading: "Reading",
   finished: "Finished",
 };
+
+export const timePeriod = ["all_time", "week", "month", "year"] as const;
+export type TimePeriod = (typeof timePeriod)[number];
