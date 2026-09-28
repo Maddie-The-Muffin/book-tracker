@@ -105,8 +105,6 @@ export async function ReadingStats({allBooks, timeQuery} : {allBooks : Book[], t
 
     const fastestRead = getFastestRead();
 
-    const formatFastestRead = (<span className={spanStyle}>${fastestRead}</span>)
-
     return (
         <div>
             {finishedBooks === null || finishedBooks.length === 0 ?
