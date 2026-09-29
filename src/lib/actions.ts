@@ -150,7 +150,7 @@ export async function saveReflection(
 
   // Reflection only shows on the book detail page, so no /shelf list revalidation is needed.
   revalidatePath(`/shelf/${bookId}`);
-  return { error: null, success: true };
+  redirect("/shelf?updated=1");
 }
 
 // Marks the reflection as declined without requiring any answers. A plain
