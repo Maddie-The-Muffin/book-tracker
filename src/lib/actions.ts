@@ -58,6 +58,9 @@ export async function updateBook(
 
   const rating = status === "want_to_read" ? null : ratingRaw ? Number(ratingRaw) : null;
   const currentDate : Date = new Date();
+  // Set inside the try block below if this update is the one transitioning
+  // the book into "finished" for the first time.
+  let justFinished = false;
 
   try {
     await db
@@ -76,11 +79,18 @@ export async function updateBook(
         }).where(and(eq(books.id, id), isNull(books.startedAt)))
       }
 
-      // update book's finished date the first time it has been finished only
+      // Update book's finished date the first time it has been finished only.
+      // `.returning()` tells us whether THIS call is the one that made the
+      // transition (row affected) vs. re-saving an already-finished book
+      // (isNull guard excludes it, so no row comes back) — used below to
+      // decide whether to prompt for a reflection.
       if (status === "finished") {
-        await db.update(books).set({
-          finishedAt: currentDate
-        }).where(and(eq(books.id, id), isNull(books.finishedAt)))
+        const [row] = await db
+          .update(books)
+          .set({ finishedAt: currentDate })
+          .where(and(eq(books.id, id), isNull(books.finishedAt)))
+          .returning({ id: books.id });
+        justFinished = !!row;
       }
   } catch {
     return {
@@ -90,7 +100,9 @@ export async function updateBook(
 
   revalidatePath("/shelf");
   revalidatePath(`/shelf/${id}`);
-  redirect("/shelf?updated=1");
+  // Only prompt for a reflection on the transition into "finished", not on
+  // every subsequent edit of an already-finished book.
+  redirect(justFinished ? `/shelf?updated=1&justFinished=${id}` : "/shelf?updated=1");
 }
 
 export type SaveReflectionState = {

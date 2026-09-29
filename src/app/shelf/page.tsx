@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { books, statusValues, type Status } from "@/db/schema";
 import { statusLabels } from "@/lib/format";
 import { UpdateSuccessDialog } from "./UpdateSuccessDialog";
+import { FinishedPrompt } from "./FinishedPrompt";
 import { CardLink } from "@/components/ui/Card";
 import { StatusPill } from "@/components/ui/StatusPill";
 import { FilterTab } from "@/components/ui/FilterTab";
@@ -15,11 +16,13 @@ function isStatus(value: string | undefined): value is Status {
 }
 
 export default async function ShelfPage(props: PageProps<"/shelf">) {
-  const { status: statusParam, updated } = await props.searchParams;
+  const { status: statusParam, updated, justFinished } = await props.searchParams;
   console.log("params: " + statusParam);
   const status = Array.isArray(statusParam) ? statusParam[0] : statusParam;
   const activeStatus = isStatus(status) ? status : undefined;
   const justUpdated = (Array.isArray(updated) ? updated[0] : updated) === "1";
+  // Present only right after a book transitions to "finished" (see updateBook).
+  const justFinishedId = Array.isArray(justFinished) ? justFinished[0] : justFinished;
 
   const shelf = activeStatus
     ? await db.select().from(books).where(eq(books.status, activeStatus)).orderBy(desc(books.createdAt))
@@ -27,7 +30,8 @@ export default async function ShelfPage(props: PageProps<"/shelf">) {
 
   return (
     <div className="space-y-6">
-      {justUpdated && <UpdateSuccessDialog />}
+      {/* The modal already communicates success, so it replaces the plain toast rather than stacking with it. */}
+      {justFinishedId ? <FinishedPrompt bookId={justFinishedId} /> : justUpdated && <UpdateSuccessDialog />}
       <div className="flex items-center justify-between">
         <h1 className="font-display text-xl font-semibold">Shelf</h1>
         <Link href="/add" className="text-sm text-terracotta hover:underline">
