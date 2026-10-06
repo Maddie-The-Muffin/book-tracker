@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { db } from "@/db";
 import { books, bookReflections } from "@/db/schema";
@@ -8,19 +8,29 @@ import { deleteBook } from "@/lib/actions";
 import { BookForm } from "./BookForm";
 import { Reflection } from "./Reflection";
 import { ShareCard } from "./ShareCard";
+import { requireUser } from "@/lib/session";
 
 // Use the book's own title so each detail page is distinguishable.
 export async function generateMetadata(props: PageProps<"/shelf/[id]">): Promise<Metadata> {
+  const user = await requireUser();
   const { id } = await props.params;
-  const [book] = await db.select({ title: books.title }).from(books).where(eq(books.id, id));
+  const [book] = await db
+    .select({ title: books.title })
+    .from(books)
+    .where(and(eq(books.id, id), eq(books.userId, user.id)));
   // notFound() in the page handles missing books; just fall back here.
   return { title: book?.title ?? "Book not found" };
 }
 
 export default async function BookDetailPage(props: PageProps<"/shelf/[id]">) {
+  const user = await requireUser();
   const { id } = await props.params;
 
-  const [book] = await db.select().from(books).where(eq(books.id, id));
+  // Scoped to the owner: another user's id looks exactly like a missing book.
+  const [book] = await db
+    .select()
+    .from(books)
+    .where(and(eq(books.id, id), eq(books.userId, user.id)));
   if (!book) notFound();
 
   const [reflection] = await db

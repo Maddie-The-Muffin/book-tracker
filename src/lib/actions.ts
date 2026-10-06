@@ -5,8 +5,23 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { books, bookReflections, statusValues } from "@/db/schema";
+import { requireUser } from "@/lib/session";
+
+// Throws unless the book exists AND belongs to this user. Used before touching
+// book_reflections, which has no owner column of its own (it's reached only
+// through its book). Server Actions are public endpoints, so a forged bookId
+// must never reach another user's data.
+async function assertOwnsBook(bookId: string, userId: string) {
+  const [owned] = await db
+    .select({ id: books.id })
+    .from(books)
+    .where(and(eq(books.id, bookId), eq(books.userId, userId)))
+    .limit(1);
+  if (!owned) throw new Error("Book not found");
+}
 
 export async function addBook(formData: FormData) {
+  const user = await requireUser();
   const openLibraryId = formData.get("openLibraryId") as string;
   const title = formData.get("title") as string;
   const author = formData.get("author") as string;
@@ -16,13 +31,13 @@ export async function addBook(formData: FormData) {
     throw new Error("Missing required book fields");
   }
 
-  // Guard against duplicates: if this book is already on the shelf (e.g. from
-  // a repeat click that slipped past the disabled button), send the user to
-  // the existing entry instead of inserting a second copy.
+  // Guard against duplicates: if this book is already on THIS USER's shelf
+  // (e.g. from a repeat click that slipped past the disabled button), send
+  // them to the existing entry instead of inserting a second copy.
   const [existing] = await db
     .select({ id: books.id })
     .from(books)
-    .where(eq(books.openLibraryId, openLibraryId))
+    .where(and(eq(books.userId, user.id), eq(books.openLibraryId, openLibraryId)))
     .limit(1);
 
   if (existing) {
@@ -31,7 +46,7 @@ export async function addBook(formData: FormData) {
 
   const [book] = await db
     .insert(books)
-    .values({ openLibraryId, title, author, coverUrl: coverUrl || null })
+    .values({ userId: user.id, openLibraryId, title, author, coverUrl: coverUrl || null })
     .returning({ id: books.id });
 
   revalidatePath("/shelf");
@@ -46,6 +61,9 @@ export async function updateBook(
   _prevState: UpdateBookState,
   formData: FormData
 ): Promise<UpdateBookState> {
+  const user = await requireUser();
+  // Reused in every update below so a forged id can only match the caller's own book.
+  const owned = (id: string) => and(eq(books.id, id), eq(books.userId, user.id));
   const id = formData.get("id") as string;
   const status = formData.get("status") as string;
   const ratingRaw = formData.get("rating") as string;
@@ -70,13 +88,13 @@ export async function updateBook(
         rating,
         notes: notes || null,
       })
-      .where(eq(books.id, id));
+      .where(owned(id));
 
       // update book's started date the first time it has been started only
       if (status === "reading") {
         await db.update(books).set({
           startedAt: currentDate
-        }).where(and(eq(books.id, id), isNull(books.startedAt)))
+        }).where(and(owned(id), isNull(books.startedAt)))
       }
 
       // Update book's finished date the first time it has been finished only.
@@ -88,7 +106,7 @@ export async function updateBook(
         const [row] = await db
           .update(books)
           .set({ finishedAt: currentDate })
-          .where(and(eq(books.id, id), isNull(books.finishedAt)))
+          .where(and(owned(id), isNull(books.finishedAt)))
           .returning({ id: books.id });
         justFinished = !!row;
       }
@@ -116,8 +134,10 @@ export async function saveReflection(
   _prevState: SaveReflectionState,
   formData: FormData
 ): Promise<SaveReflectionState> {
+  const user = await requireUser();
   const bookId = formData.get("bookId") as string;
   if (!bookId) throw new Error("Missing book id");
+  await assertOwnsBook(bookId, user.id);
 
   const favoritePart = formData.get("favoritePart") as string;
   const leastFavoritePart = formData.get("leastFavoritePart") as string;
@@ -157,8 +177,10 @@ export async function saveReflection(
 // action (no pending/error UI needed) like deleteBook, rather than the
 // useActionState shape saveReflection uses.
 export async function skipReflection(formData: FormData) {
+  const user = await requireUser();
   const bookId = formData.get("bookId") as string;
   if (!bookId) throw new Error("Missing book id");
+  await assertOwnsBook(bookId, user.id);
 
   await db
     .insert(bookReflections)
@@ -169,17 +191,20 @@ export async function skipReflection(formData: FormData) {
 }
 
 export async function deleteBook(formData: FormData) {
+  const user = await requireUser();
   const id = formData.get("id") as string;
   if (!id) throw new Error("Missing book id");
 
-  await db.delete(books).where(eq(books.id, id));
+  await db.delete(books).where(and(eq(books.id, id), eq(books.userId, user.id)));
 
   revalidatePath("/shelf");
   redirect("/shelf");
 }
 
 export async function clearShelf() {
-  await db.delete(books);
+  const user = await requireUser();
+  // Scoped to the caller: an unfiltered delete here would wipe every user's shelf.
+  await db.delete(books).where(eq(books.userId, user.id));
 
   revalidatePath("/shelf");
   redirect("/shelf");

@@ -1,23 +1,25 @@
 import Link from "next/link";
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { books } from "@/db/schema";
 import { statusLabels } from "@/lib/format";
 import { Card, CardLink } from "@/components/ui/Card";
 import { ReadingStats } from "@/components/ui/ReadingStats";
+import { requireUser } from "@/lib/session";
 
 export default async function Home(props: PageProps<"/">) {
+  const user = await requireUser();
   const { statusperiod: timeQuery } = await props.searchParams;
 
   const [currentlyReading, recentlyFinished, total] = await Promise.all([
-    db.select().from(books).where(eq(books.status, "reading")).orderBy(desc(books.createdAt)),
+    db.select().from(books).where(and(eq(books.userId, user.id), eq(books.status, "reading"))).orderBy(desc(books.createdAt)),
     db
       .select()
       .from(books)
-      .where(eq(books.status, "finished"))
+      .where(and(eq(books.userId, user.id), eq(books.status, "finished")))
       .orderBy(desc(books.finishedAt))
       .limit(5),
-    db.select().from(books),
+    db.select().from(books).where(eq(books.userId, user.id)),
   ]);
 
   if (total.length === 0) {

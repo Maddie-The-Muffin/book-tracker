@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Form from "next/form";
-import { inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { db } from "@/db";
 import { books } from "@/db/schema";
 import { searchOpenLibrary } from "@/lib/open-library";
 import { addBook } from "@/lib/actions";
+import { requireUser } from "@/lib/session";
 import { SearchButton } from "./search-button";
 import { AddButton } from "./add-button";
 import { Card } from "@/components/ui/Card";
@@ -19,12 +20,13 @@ export async function generateMetadata(props: PageProps<"/add">): Promise<Metada
 }
 
 export default async function AddBookPage(props: PageProps<"/add">) {
+  const user = await requireUser();
   const { q } = await props.searchParams;
   const query = Array.isArray(q) ? q[0] : q;
 
   const results = query ? await searchOpenLibrary(query) : {result: [], error: null};
 
-  // Look up which of the search results are already on the shelf so we can
+  // Look up which of the search results are already on THIS USER's shelf so we can
   // disable adding them again instead of letting duplicates slip through.
   const openLibraryIds = results.result.map((result) => result.openLibraryId);
   const existingIds = new Set(
@@ -33,7 +35,7 @@ export default async function AddBookPage(props: PageProps<"/add">) {
           await db
             .select({ openLibraryId: books.openLibraryId })
             .from(books)
-            .where(inArray(books.openLibraryId, openLibraryIds))
+            .where(and(eq(books.userId, user.id), inArray(books.openLibraryId, openLibraryIds)))
         ).map((row) => row.openLibraryId)
       : []
   );

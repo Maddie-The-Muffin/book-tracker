@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { books, statusValues, type Status } from "@/db/schema";
 import { statusLabels } from "@/lib/format";
@@ -10,6 +10,7 @@ import { CardLink } from "@/components/ui/Card";
 import { StatusPill } from "@/components/ui/StatusPill";
 import { FilterTab } from "@/components/ui/FilterTab";
 import { clearShelf } from "@/lib/actions";
+import { requireUser } from "@/lib/session";
 
 function isStatus(value: string | undefined): value is Status {
   // !!value is equivalent to value !== undefined and rules out empty strings as well
@@ -24,6 +25,7 @@ export async function generateMetadata(props: PageProps<"/shelf">): Promise<Meta
 }
 
 export default async function ShelfPage(props: PageProps<"/shelf">) {
+  const user = await requireUser();
   const { status: statusParam, updated, justFinished } = await props.searchParams;
   console.log("params: " + statusParam);
   const status = Array.isArray(statusParam) ? statusParam[0] : statusParam;
@@ -32,9 +34,16 @@ export default async function ShelfPage(props: PageProps<"/shelf">) {
   // Present only right after a book transitions to "finished" (see updateBook).
   const justFinishedId = Array.isArray(justFinished) ? justFinished[0] : justFinished;
 
-  const shelf = activeStatus
-    ? await db.select().from(books).where(eq(books.status, activeStatus)).orderBy(desc(books.createdAt))
-    : await db.select().from(books).orderBy(desc(books.createdAt));
+  // Only this user's books, optionally narrowed by status.
+  const shelf = await db
+    .select()
+    .from(books)
+    .where(
+      activeStatus
+        ? and(eq(books.userId, user.id), eq(books.status, activeStatus))
+        : eq(books.userId, user.id)
+    )
+    .orderBy(desc(books.createdAt));
 
   return (
     <div className="space-y-6">
