@@ -1,5 +1,7 @@
 # Still to do:
 
+[ ] Footer
+
 # Completed:
 [X] Share card on finish book (share to twitter, facebook, native mobile - things like the book's title, author, rating, notes?)
 [X] Add loading spinner for book search page
@@ -12,3 +14,4 @@
     - (developer's note: reflection questions now redirect to shelf on save so this is now moot)
 [X] Responsive design for small screens
 [X] Accessibility considerations (aria labels, reduced motion, etc)
+[X] 404 page
