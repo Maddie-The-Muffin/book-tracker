@@ -1,7 +1,7 @@
 # Still to do:
-[ ] Share card on finish book (share to twitter, facebook, native mobile - things like the book's title, author, rating, notes?)
 
 # Completed:
+[X] Share card on finish book (share to twitter, facebook, native mobile - things like the book's title, author, rating, notes?)
 [X] Add loading spinner for book search page
 [X] Save changes should go back to shelf page on success (w success popup).
 [X] If saving changes failed (because of internet or other reason) it should remain on the edit page with a dialog saying changes failed to update

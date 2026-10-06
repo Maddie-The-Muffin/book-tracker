@@ -7,6 +7,7 @@ import { books, bookReflections } from "@/db/schema";
 import { deleteBook } from "@/lib/actions";
 import { BookForm } from "./BookForm";
 import { Reflection } from "./Reflection";
+import { ShareCard } from "./ShareCard";
 
 // Use the book's own title so each detail page is distinguishable.
 export async function generateMetadata(props: PageProps<"/shelf/[id]">): Promise<Metadata> {
@@ -54,6 +55,11 @@ export default async function BookDetailPage(props: PageProps<"/shelf/[id]">) {
 
       {book.status === "finished" && (
         <Reflection bookId={book.id} reflection={reflection ?? null} />
+      )}
+
+      {/* Sits alongside (not instead of) the reflection card once the book is finished. */}
+      {book.status === "finished" && (
+        <ShareCard title={book.title} author={book.author} rating={book.rating} />
       )}
 
       <form action={deleteBook}>
