@@ -28,7 +28,7 @@ export function ShareCard({
   const [copyMessage, setCopyMessage] = useState("");
 
   // Pre-filled message. Notes are deliberately left out: they're private by default.
-  const text = `I just finished reading "${title}" by ${author}${rating ? ` — ${rating}/5 stars.` : ""}.`;
+  const text = `I just finished reading "${title}" by ${author}${rating ? ` — ${rating}/5 stars` : ""}.`;
 
   const nativeShare = async () => {
     try {
