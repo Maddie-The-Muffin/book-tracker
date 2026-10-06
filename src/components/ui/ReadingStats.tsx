@@ -123,7 +123,6 @@ export async function ReadingStats({allBooks, timeQuery} : {allBooks : Book[], t
         if (fastestTimeInDaysStr === "1" || fastestTimeInDaysStr === "1.0")
             unit = unit.split("s")[0];
 
-        console.log("unit is: " + unit);
         return { name: fastestName, time: fastestTimeInDaysStr, unit };
     }
 
