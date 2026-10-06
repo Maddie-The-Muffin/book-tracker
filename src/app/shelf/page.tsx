@@ -44,7 +44,8 @@ export default async function ShelfPage(props: PageProps<"/shelf">) {
         </form>
       </div>
 
-      <div className="flex gap-2 text-sm">
+      {/* Labelled navigation landmark so the filter links are identifiable as a group. */}
+      <nav aria-label="Filter books by status" className="flex gap-2 text-sm">
         <FilterTab href="/shelf" label="All" active={!activeStatus} />
         {statusValues.map((s) => (
           <FilterTab
@@ -54,7 +55,7 @@ export default async function ShelfPage(props: PageProps<"/shelf">) {
             active={activeStatus === s}
           />
         ))}
-      </div>
+      </nav>
 
       {shelf.length === 0 ? (
         <p className="text-sm text-ink-muted">No books here yet.</p>

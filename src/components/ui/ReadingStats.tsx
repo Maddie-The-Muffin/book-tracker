@@ -112,16 +112,17 @@ export async function ReadingStats({allBooks, timeQuery} : {allBooks : Book[], t
             {finishedBooks === null || finishedBooks.length === 0 ?
             <p className={paragraphStyle}>Try finishing some books and see what shows up here!</p> :
             (<div className={divStyle}>
-                <div className="flex gap-2 text-sm mb-2">
+                {/* Labelled landmark so the time-period links are announced as a group. */}
+                <nav aria-label="Reading stats time period" className="flex gap-2 text-sm mb-2">
                     {timePeriod.map((v) => (
-                        <FilterTab 
+                        <FilterTab
                         key={v}
                         href={`/?statusperiod=${v}`}
                         label={TimeValues[v]}
                         active={activeStatus === v}
                         />
                     ))}
-                </div>
+                </nav>
                 {booksInTimePeriod === null || booksInTimePeriod.length === 0 ? 
                 <p>Try reading some books this {activeStatus}!</p> :
                 (<div>

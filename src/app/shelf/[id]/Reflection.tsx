@@ -54,12 +54,12 @@ export function Reflection({
         <input type="hidden" name="bookId" value={bookId} />
 
         {state.error && (
-          <p className="rounded-lg border border-brick/30 bg-brick-tint p-2 text-sm text-brick">
+          <p role="alert" className="rounded-lg border border-brick/30 bg-brick-tint p-2 text-sm text-brick">
             {state.error}
           </p>
         )}
         {state.success && (
-          <p className="rounded-lg border border-sage/30 bg-sage-tint p-2 text-sm text-sage-dark">
+          <p role="status" className="rounded-lg border border-sage/30 bg-sage-tint p-2 text-sm text-sage-dark">
             Reflection saved.
           </p>
         )}

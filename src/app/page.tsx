@@ -78,7 +78,14 @@ export default async function Home(props: PageProps<"/">) {
                   <span className="max-w-7/10 font-medium truncate">{book.title}</span>{" "}
                   <span className="text-ink-muted px-[5px] truncate">by {book.author}</span>
                   {book.rating ? (
-                    <span className="ml-2 text-caramel">{"★".repeat(book.rating)}</span>
+                    // Glyphs are hidden; the label gives screen readers a readable rating.
+                    <span
+                      role="img"
+                      aria-label={`${book.rating} out of 5 stars`}
+                      className="ml-2 text-caramel"
+                    >
+                      {"★".repeat(book.rating)}
+                    </span>
                   ) : null}
                 </CardLink>
               </li>

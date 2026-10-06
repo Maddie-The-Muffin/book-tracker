@@ -21,7 +21,8 @@ export function BookForm({ book }: { book: Book }) {
         <input type="hidden" name="id" value={book.id} />
 
         {state.error && (
-          <p className="rounded-lg border border-brick/30 bg-brick-tint p-2 text-sm text-brick">
+          // role="alert" announces save errors as soon as they appear.
+          <p role="alert" className="rounded-lg border border-brick/30 bg-brick-tint p-2 text-sm text-brick">
             {state.error}
           </p>
         )}
@@ -52,7 +53,8 @@ export function BookForm({ book }: { book: Book }) {
             <option value="">No rating</option>
             {[1, 2, 3, 4, 5].map((n) => (
               <option key={n} value={n}>
-                {"★".repeat(n)}
+                {/* Spell out the number: screen readers read "★★★" as repeated "black star". */}
+                {"★".repeat(n)} ({n} of 5)
               </option>
             ))}
           </Select>

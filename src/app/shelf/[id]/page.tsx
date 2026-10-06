@@ -24,7 +24,8 @@ export default async function BookDetailPage(props: PageProps<"/shelf/[id]">) {
         {book.coverUrl ? (
           <Image
             src={book.coverUrl}
-            alt={`Cover of ${book.title}`}
+            // Decorative: the title is the h1 right beside it.
+            alt=""
             width={96}
             height={144}
             className="rounded-lg border border-border object-cover shadow-warm"

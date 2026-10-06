@@ -68,7 +68,8 @@ export default async function AddBookPage(props: PageProps<"/add">) {
               {result.coverUrl ? (
                 <Image
                   src={result.coverUrl}
-                  alt={`Cover of ${result.title}`}
+                  // Decorative: the title is already text right next to the image.
+                  alt=""
                   width={40}
                   height={60}
                   className="rounded object-cover"
@@ -90,7 +91,7 @@ export default async function AddBookPage(props: PageProps<"/add">) {
                   <input type="hidden" name="title" value={result.title} />
                   <input type="hidden" name="author" value={result.author} />
                   <input type="hidden" name="coverUrl" value={result.coverUrl ?? ""} />
-                  <AddButton />
+                  <AddButton title={result.title} />
                 </form>
               )}
             </Card>

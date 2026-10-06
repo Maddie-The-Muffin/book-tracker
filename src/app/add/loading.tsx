@@ -8,8 +8,9 @@ export default function Loading() {
         <div className="h-10 w-20 rounded-full bg-border" />
       </div>
 
-      <div className="flex items-center justify-center gap-2 py-8 text-sm text-ink-muted">
-        <span className="h-4 w-4 animate-spin rounded-full border-2 border-border border-t-terracotta" />
+      {/* role="status" announces the loading text to screen reader users. */}
+      <div role="status" className="flex items-center justify-center gap-2 py-8 text-sm text-ink-muted">
+        <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-border border-t-terracotta" />
         Searching Open Library...
       </div>
     </div>
