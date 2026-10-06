@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { NavLink } from "@/components/ui/NavLink";
+import { Footer } from "@/components/ui/Footer";
 import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 
@@ -52,6 +53,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </header>
         {/* id is the skip link's target; tabIndex -1 lets it receive focus programmatically. */}
         <main id="main" tabIndex={-1} className="focus:outline-none mx-auto w-full max-w-3xl flex-1 px-4 py-8">{children}</main>
+        <Footer />
       </body>
     </html>
   );
