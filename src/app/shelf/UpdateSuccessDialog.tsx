@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 // How long the dialog sits fully visible before it starts sliding away.
-const HOLD_MS = 1000;
+// Kept generous so slower readers (and screen reader announcements) aren't cut off.
+const HOLD_MS = 4000;
 // How long the slide-up-and-fade exit transition takes, must match the duration-* class below.
 const EXIT_MS = 400;
 
@@ -32,9 +33,13 @@ export function UpdateSuccessDialog() {
 
   return (
     <div className="fixed inset-x-0 top-4 z-50 flex justify-center px-4">
+      {/* role="status" is a polite live region, so screen readers announce the
+          message without stealing focus. motion-reduce drops the slide animation
+          for users who've asked for less motion (the fade still happens). */}
       <div
-        className={`rounded-lg bg-ink px-4 py-2 text-sm text-surface shadow-lg transition-all duration-[400ms] ease-in ${
-          leaving ? "-translate-y-20 opacity-0" : "translate-y-0 opacity-100"
+        role="status"
+        className={`rounded-lg bg-ink px-4 py-2 text-sm text-surface shadow-lg transition-all duration-[400ms] ease-in motion-reduce:transition-opacity ${
+          leaving ? "-translate-y-20 opacity-0 motion-reduce:translate-y-0" : "translate-y-0 opacity-100"
         }`}
       >
         Book updated

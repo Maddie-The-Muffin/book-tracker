@@ -26,6 +26,8 @@ export async function ReadingStats({allBooks, timeQuery} : {allBooks : Book[], t
     const paragraphStyle: string = "text-md text-ink-muted";
     const spanStyle = "text-md text-ink font-bold";
     const divStyle: string = "rounded-xl border border-border bg-surface p-4 shadow-warm";
+
+    {/* todo: move Date.now on line 46 to useState */}
     
 
     const finishedBooks = allBooks.filter((book) => {
@@ -78,7 +80,7 @@ export async function ReadingStats({allBooks, timeQuery} : {allBooks : Book[], t
         }
         else {
             // convert into something easily understandable in hours
-            let temp = totalTime * 24;
+            const temp = totalTime * 24;
             totalTime = Number(temp.toFixed(0));
         }
         return {time: totalTime, format: finalFormat}

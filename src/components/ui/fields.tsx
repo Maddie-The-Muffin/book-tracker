@@ -7,7 +7,7 @@ import {
 // Shared form-field look for text inputs, selects, and textareas so the
 // BookForm and the /add search box stay visually consistent.
 const fieldStyles =
-  "w-full rounded-lg border border-border bg-surface p-2 text-ink placeholder:text-ink-muted focus:border-terracotta focus:outline-none disabled:cursor-not-allowed disabled:bg-cream disabled:text-ink-muted";
+  "w-full rounded-lg border border-border bg-surface p-2 text-ink placeholder:text-ink-muted focus-visible:border-terracotta focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta disabled:cursor-not-allowed disabled:bg-cream disabled:text-ink-muted";
 
 export function Input({ className = "", ...props }: InputHTMLAttributes<HTMLInputElement>) {
   return <input className={`${fieldStyles} ${className}`} {...props} />;

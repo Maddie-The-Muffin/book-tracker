@@ -34,6 +34,13 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
+/* Visible keyboard focus for every interactive element (links, buttons, tabs).
+   :focus-visible only shows for keyboard users, so mouse clicks stay clean. */
+:focus-visible {
+  outline: 2px solid var(--color-terracotta-hover);
+  outline-offset: 2px;
+}
+
 /* Soft, warm-toned card shadow (light through a cafe window) instead of
    Tailwind's default neutral-gray shadow. */
 .shadow-warm {

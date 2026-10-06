@@ -58,8 +58,7 @@ export async function searchOpenLibrary(query: string): Promise<OpenLibrarySearc
 
   return {result: results, error: null}
   }
-  catch (e: any) {
-    console.log("NO");
+  catch {
     return {result: [], error: new Error("Oops!")};
   }
   
