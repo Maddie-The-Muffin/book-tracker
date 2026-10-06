@@ -8,7 +8,6 @@ import { ReadingStats } from "@/components/ui/ReadingStats";
 
 export default async function Home(props: PageProps<"/">) {
   const { statusperiod: timeQuery } = await props.searchParams;
-  console.log("quewy " + timeQuery);
 
   const [currentlyReading, recentlyFinished, total] = await Promise.all([
     db.select().from(books).where(eq(books.status, "reading")).orderBy(desc(books.createdAt)),
