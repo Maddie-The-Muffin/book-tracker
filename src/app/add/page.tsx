@@ -3,7 +3,7 @@ import Form from "next/form";
 import { inArray } from "drizzle-orm";
 import { db } from "@/db";
 import { books } from "@/db/schema";
-import { searchOpenLibrary, errorReturn } from "@/lib/open-library";
+import { searchOpenLibrary } from "@/lib/open-library";
 import { addBook } from "@/lib/actions";
 import { SearchButton } from "./search-button";
 import { AddButton } from "./add-button";
