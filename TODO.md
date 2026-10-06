@@ -1,6 +1,10 @@
 # Still to do:
-
-[ ] Footer
+[ ] See if changing from email/password to username/password is worth it
+[ ] Privacy policy
+[ ] Auth tests
+[ ] check to make sure no attacks can be done via book search bar
+[ ] Account deletion
+[ ] Sign-up rate limits
 
 # Completed:
 [X] Share card on finish book (share to twitter, facebook, native mobile - things like the book's title, author, rating, notes?)
@@ -15,3 +19,4 @@
 [X] Responsive design for small screens
 [X] Accessibility considerations (aria labels, reduced motion, etc)
 [X] 404 page
+[X] Footer
