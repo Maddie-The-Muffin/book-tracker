@@ -63,8 +63,8 @@ export default async function ShelfPage(props: PageProps<"/shelf">) {
           {shelf.map((book) => (
             <li key={book.id}>
               <CardLink href={`/shelf/${book.id}`} className="flex items-center justify-between p-3">
-                <div className="flex max-w-9/10">
-                  <span className="max-w-7/10 font-medium truncate">{book.title}</span>{" "}
+                <div className="flex max-w-7/10 md:max-w-9/10">
+                  <span className="max-w-7/10 font-base md:font-medium truncate">{book.title}</span>{" "}
                   <span className="text-ink-muted px-[5px] truncate">by {book.author}</span>
                 </div>
                 <StatusPill status={book.status} />

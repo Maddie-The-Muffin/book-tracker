@@ -12,7 +12,7 @@ export function FilterTab({
   return (
     <Link
       href={href}
-      className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
+      className={`rounded-full px-3 py-1 text-xs sm:text-sm font-medium transition-colors ${
         active ? "bg-terracotta text-surface" : "border border-border text-ink-muted hover:bg-cream"
       }`}
     >
