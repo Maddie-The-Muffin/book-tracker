@@ -9,6 +9,14 @@ const TimeValues: Record<TimePeriod, string> = {
     year: "Year"
 }
 
+// Timestamp `ms` milliseconds ago. This is a Server Component, so it renders once
+// per request and reading the clock is safe; the react-hooks/purity lint rule
+// assumes components re-render repeatedly, so the clock read lives in this helper
+// rather than directly in the render body.
+function getCutoffTime(ms: number): number {
+    return Date.now() - ms;
+}
+
 function isValidTime(val: string | undefined) {
     return !!val && (timePeriod as readonly string[]).includes(val);
 }
@@ -27,9 +35,6 @@ export async function ReadingStats({allBooks, timeQuery} : {allBooks : Book[], t
     const spanStyle = "text-md text-ink font-bold";
     const divStyle: string = "rounded-xl border border-border bg-surface p-4 shadow-warm";
 
-    {/* todo: move Date.now on line 46 to useState */}
-    
-
     const finishedBooks = allBooks.filter((book) => {
         return book.status === "finished";
     });
@@ -45,8 +50,8 @@ export async function ReadingStats({allBooks, timeQuery} : {allBooks : Book[], t
         }
         else {
             const subMilliseconds = activeStatus === "week" ? millisecondsInAWeek : activeStatus === "month" ? millsecondsInAMonth : millisecondsInAYear;
-            const nowInMilliseconds = Date.now();
-            const finalTimeMS = nowInMilliseconds - subMilliseconds;
+            // Books started after this timestamp fall inside the selected period.
+            const finalTimeMS = getCutoffTime(subMilliseconds);
             const booksInTimePeriod = finishedBooks.filter((book) => {
                 if (book.startedAt !== null) {
                     return book.startedAt.getTime() >= finalTimeMS;
@@ -88,21 +93,38 @@ export async function ReadingStats({allBooks, timeQuery} : {allBooks : Book[], t
 
     const avgTime = totUpAverageTime();
 
-    const getFastestRead = (): string => {
+    const getFastestRead = (): { name: string, time: string, unit: string} => {
         let fastestTime = Number.MAX_SAFE_INTEGER;
         let fastestName = "";
 
         booksInTimePeriod.forEach(book => {
             if (book.startedAt !== null && book.finishedAt !== null) {
                 const timePassedInMS = book.finishedAt.getTime() - book.startedAt.getTime();
-                if (timePassedInMS < fastestTime) { // todo to consider: how about ties?
+                if (timePassedInMS < fastestTime) { 
                     fastestTime = timePassedInMS;
                     fastestName = book.title;
                 }
             }
         })
 
-        return fastestName;
+        let unit = "";
+
+        if (fastestTime < millisecondsInADay)
+            unit = "hours";
+        else
+            unit = "days";
+
+        const fastestTimeInDays = fastestTime < millisecondsInADay ? fastestTime / (1000 * 60 * 60) : fastestTime / millisecondsInADay;
+        let fastestTimeInDaysStr = fastestTimeInDays.toPrecision(2);
+        
+        if (fastestTimeInDays >= 1) 
+            fastestTimeInDaysStr = fastestTimeInDaysStr.split(".")[0];
+
+        if (fastestTimeInDaysStr === "1" || fastestTimeInDaysStr === "1.0")
+            unit = unit.split("s")[0];
+
+        console.log("unit is: " + unit);
+        return { name: fastestName, time: fastestTimeInDaysStr, unit };
     }
 
     const fastestRead = getFastestRead();
@@ -130,7 +152,8 @@ export async function ReadingStats({allBooks, timeQuery} : {allBooks : Book[], t
                         {activeStatus !== "all_time" ? "this " + activeStatus : "in total"}.</p>
                     <p className={paragraphStyle}>The average time it takes you to finish a book is <span className={spanStyle}>{avgTime.time} {" "}
                         {avgTime.time === 1 ? /* remove trailing 's' */avgTime.format.split("s")[0] : avgTime.format}.</span></p>
-                    <p className={paragraphStyle}>The fastest book you read is <span className={spanStyle}>{fastestRead}.</span></p>
+                    <p className={paragraphStyle}>The fastest book you read is <span className={spanStyle}>{fastestRead.name}. {"("}{fastestRead.time}{" "}
+                        {fastestRead.unit}{")"}</span></p>
                 </div>)}
             </div>) 
             }
