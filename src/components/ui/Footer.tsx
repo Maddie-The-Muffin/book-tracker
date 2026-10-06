@@ -7,7 +7,7 @@ export function Footer() {
                 target="_blank"
                 referrerPolicy="no-referrer"
                 className="text-ink font-bold underline inline-flex min-h-11 items-center"
-                >Madilyn Tavares<span className="sr-only">(opens in a new tab)</span>
+                >Madilyn Tavares {" "}<span className="sr-only"> (opens in a new tab)</span>
                 </a>
             </p>
         </div>
