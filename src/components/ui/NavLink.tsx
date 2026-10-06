@@ -19,7 +19,12 @@ export function NavLink({
   const isCurrent = href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
-    <Link href={href} aria-current={isCurrent ? "page" : undefined} className={className}>
+    // min-h-11 (44px) keeps the header links an easy touch target.
+    <Link
+      href={href}
+      aria-current={isCurrent ? "page" : undefined}
+      className={`inline-flex min-h-11 items-center ${className}`}
+    >
       {children}
     </Link>
   );

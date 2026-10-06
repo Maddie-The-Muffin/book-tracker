@@ -14,7 +14,7 @@ export function FilterTab({
       href={href}
       // Tells screen readers which tab is selected; colour alone doesn't convey it.
       aria-current={active ? "page" : undefined}
-      className={`rounded-full px-3 py-1 text-xs sm:text-sm font-medium transition-colors ${
+      className={`inline-flex min-h-11 items-center rounded-full px-3 text-xs sm:text-sm font-medium transition-colors ${
         active ? "bg-terracotta text-surface" : "border border-border text-ink-muted hover:bg-cream"
       }`}
     >

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Form from "next/form";
 import { inArray } from "drizzle-orm";
@@ -9,6 +10,13 @@ import { SearchButton } from "./search-button";
 import { AddButton } from "./add-button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/fields";
+
+// Include the search term so each results page has a distinct title.
+export async function generateMetadata(props: PageProps<"/add">): Promise<Metadata> {
+  const { q } = await props.searchParams;
+  const query = Array.isArray(q) ? q[0] : q;
+  return { title: query ? `Search results for "${query}"` : "Add a book" };
+}
 
 export default async function AddBookPage(props: PageProps<"/add">) {
   const { q } = await props.searchParams;

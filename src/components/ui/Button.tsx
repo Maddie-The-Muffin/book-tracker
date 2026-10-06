@@ -14,7 +14,7 @@ const variantStyles = {
 export function Button({ variant = "primary", className = "", ...props }: ButtonProps) {
   return (
     <button
-      className={`rounded-full px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed ${variantStyles[variant]} ${className}`}
+      className={`min-h-11 rounded-full px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed ${variantStyles[variant]} ${className}`}
       {...props}
     />
   );

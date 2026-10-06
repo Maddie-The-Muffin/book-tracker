@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
@@ -13,6 +14,13 @@ import { clearShelf } from "@/lib/actions";
 function isStatus(value: string | undefined): value is Status {
   // !!value is equivalent to value !== undefined and rules out empty strings as well
   return !!value && (statusValues as readonly string[]).includes(value);
+}
+
+// Title reflects the active filter, e.g. "Finished | Book Tracker" vs "Shelf | Book Tracker".
+export async function generateMetadata(props: PageProps<"/shelf">): Promise<Metadata> {
+  const { status } = await props.searchParams;
+  const value = Array.isArray(status) ? status[0] : status;
+  return { title: isStatus(value) ? `Shelf: ${statusLabels[value]}` : "Shelf" };
 }
 
 export default async function ShelfPage(props: PageProps<"/shelf">) {
@@ -34,11 +42,11 @@ export default async function ShelfPage(props: PageProps<"/shelf">) {
       {justFinishedId ? <FinishedPrompt bookId={justFinishedId} /> : justUpdated && <UpdateSuccessDialog />}
       <div className="flex items-center justify-between">
         <h1 className="font-display text-xl font-semibold">Shelf</h1>
-        <Link href="/add" className="text-sm text-terracotta hover:underline">
+        <Link href="/add" className="inline-flex min-h-11 items-center text-sm text-terracotta hover:underline">
           + Add a book
         </Link>
         <form action={clearShelf}>
-          <button type="submit" className="text-sm text-brick hover:underline cursor-pointer">
+          <button type="submit" className="min-h-11 text-sm text-brick hover:underline cursor-pointer">
             Clear shelf
           </button>
         </form>

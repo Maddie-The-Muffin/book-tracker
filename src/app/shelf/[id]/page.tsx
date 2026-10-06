@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
@@ -6,6 +7,14 @@ import { books, bookReflections } from "@/db/schema";
 import { deleteBook } from "@/lib/actions";
 import { BookForm } from "./BookForm";
 import { Reflection } from "./Reflection";
+
+// Use the book's own title so each detail page is distinguishable.
+export async function generateMetadata(props: PageProps<"/shelf/[id]">): Promise<Metadata> {
+  const { id } = await props.params;
+  const [book] = await db.select({ title: books.title }).from(books).where(eq(books.id, id));
+  // notFound() in the page handles missing books; just fall back here.
+  return { title: book?.title ?? "Book not found" };
+}
 
 export default async function BookDetailPage(props: PageProps<"/shelf/[id]">) {
   const { id } = await props.params;
@@ -49,7 +58,7 @@ export default async function BookDetailPage(props: PageProps<"/shelf/[id]">) {
 
       <form action={deleteBook}>
         <input type="hidden" name="id" value={book.id} />
-        <button type="submit" className="text-sm text-brick hover:underline">
+        <button type="submit" className="min-h-11 text-sm text-brick hover:underline">
           Remove from shelf
         </button>
       </form>

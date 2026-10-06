@@ -32,7 +32,7 @@ export function Reflection({
         <p className="text-sm text-ink-muted">You skipped the reflection for this book.</p>
         <button
           type="button"
-          className="text-sm text-terracotta hover:underline"
+          className="min-h-11 text-sm text-terracotta hover:underline"
           onClick={() => setReopened(true)}
         >
           Add a reflection

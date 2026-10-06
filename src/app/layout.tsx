@@ -16,7 +16,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Book Tracker",
+  // Pages set their own `title`, which fills %s; the home page uses `default`.
+  // Distinct titles tell screen reader users where they landed after navigating.
+  title: { default: "Book Tracker", template: "%s | Book Tracker" },
   description: "A personal reading log.",
 };
 
@@ -35,7 +37,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to main content
         </a>
         <header className="border-b border-border bg-surface">
-          <nav aria-label="Main" className="mx-auto flex max-w-3xl items-center gap-6 px-4 py-4">
+          <nav aria-label="Main" className="mx-auto flex max-w-3xl items-center gap-6 px-4 py-1">
             <NavLink href="/" className="font-display text-lg font-semibold">
               {/* Emoji is decorative; hide it so it isn't read aloud. */}
               <span aria-hidden="true">📚</span> Book Tracker

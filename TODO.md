@@ -1,6 +1,4 @@
 # Still to do:
-
-[ ] Accessibility considerations (aria labels, reduced motion, etc)
 [ ] Share card on finish book (share to twitter, facebook, native mobile - things like the book's title, author, rating, notes?)
 
 # Completed:
@@ -13,3 +11,4 @@
 [X] Fix bug on reflection page where "would recommend" resets to default on save (visual bug only)
     - (developer's note: reflection questions now redirect to shelf on save so this is now moot)
 [X] Responsive design for small screens
+[X] Accessibility considerations (aria labels, reduced motion, etc)

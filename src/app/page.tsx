@@ -25,7 +25,7 @@ export default async function Home(props: PageProps<"/">) {
     return (
       <div className="text-center text-ink-muted">
         <p className="mb-4">Your shelf is empty.</p>
-        <Link href="/add" className="text-terracotta hover:underline">
+        <Link href="/add" className="inline-flex min-h-11 items-center text-terracotta hover:underline">
           Add your first book
         </Link>
       </div>
