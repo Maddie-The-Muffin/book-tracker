@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { NavLink } from "@/components/ui/NavLink";
 import { Footer } from "@/components/ui/Footer";
+import { SignOutButton } from "@/components/ui/SignOutButton";
+import { getUser } from "@/lib/session";
 import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 
@@ -23,7 +25,10 @@ export const metadata: Metadata = {
   description: "A personal reading log.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // Drives the nav: signed-in users get Shelf / Add / Sign out, visitors get Sign in / Sign up.
+  const user = await getUser();
+
   return (
     <html
       lang="en"
@@ -43,12 +48,26 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               {/* Emoji is decorative; hide it so it isn't read aloud. */}
               <span aria-hidden="true">📚</span> Book Tracker
             </NavLink>
-            <NavLink href="/shelf" className="text-sm text-ink-muted hover:text-ink">
-              Shelf
-            </NavLink>
-            <NavLink href="/add" className="text-sm text-ink-muted hover:text-ink">
-              Add a book
-            </NavLink>
+            {user ? (
+              <>
+                <NavLink href="/shelf" className="text-sm text-ink-muted hover:text-ink">
+                  Shelf
+                </NavLink>
+                <NavLink href="/add" className="text-sm text-ink-muted hover:text-ink">
+                  Add a book
+                </NavLink>
+                <SignOutButton />
+              </>
+            ) : (
+              <>
+                <NavLink href="/sign-in" className="ml-auto text-sm text-ink-muted hover:text-ink">
+                  Sign in
+                </NavLink>
+                <NavLink href="/sign-up" className="text-sm text-ink-muted hover:text-ink">
+                  Sign up
+                </NavLink>
+              </>
+            )}
           </nav>
         </header>
         {/* id is the skip link's target; tabIndex -1 lets it receive focus programmatically. */}
