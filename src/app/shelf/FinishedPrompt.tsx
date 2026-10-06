@@ -27,7 +27,7 @@ export function FinishedPrompt({ bookId }: { bookId: string }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 p-4"
+      className="fixed h-svh inset-0 z-50 flex items-center justify-center bg-ink/40"
       onClick={dismiss}
     >
       {/* Card doesn't accept arbitrary props, so the dialog/aria attributes and
