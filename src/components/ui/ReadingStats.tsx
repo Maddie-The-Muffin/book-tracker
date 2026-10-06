@@ -4,9 +4,9 @@ import { timePeriod, TimePeriod } from "@/lib/format";
 
 const TimeValues: Record<TimePeriod, string> = {
     all_time: "All Time",
-    week: "Week",
-    month: "Month",
-    year: "Year"
+    week: "Last 7 days",
+    month: "Last 30 days",
+    year: "Last year"
 }
 
 // Timestamp `ms` milliseconds ago. This is a Server Component, so it renders once
