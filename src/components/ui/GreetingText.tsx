@@ -5,6 +5,6 @@ export async function GreetingText() {
     const userText = user?.name ?? "User";
     
     return (
-        <p className="ml-auto inline-flex items-center text-sm text-ink-muted">Hi, {userText}!</p>
+        <p className="inline-flex min-h-11 md:ml-auto items-center text-sm text-ink-muted">Hi, {userText}!</p>
     )
 }

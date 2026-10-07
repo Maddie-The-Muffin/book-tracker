@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { NavLink } from "@/components/ui/NavLink";
 import { Footer } from "@/components/ui/Footer";
 import { SignOutButton } from "@/components/ui/SignOutButton";
+import { NavMenu } from "@/components/ui/NavMenu";
 import { getUser } from "@/lib/session";
 import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
@@ -44,11 +45,13 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           Skip to main content
         </a>
         <header className="border-b border-border bg-surface">
-          <nav aria-label="Main" className="mx-auto flex max-w-3xl items-center gap-6 px-4 py-1">
+          <nav aria-label="Main" className="mx-auto flex max-w-3xl flex-wrap items-center gap-x-6 px-4 py-1">
             <NavLink href="/" className="font-display text-lg font-semibold">
               {/* Emoji is decorative; hide it so it isn't read aloud. */}
               <span aria-hidden="true">📚</span> Book Tracker
             </NavLink>
+            {/* Links collapse into a hamburger menu below the md breakpoint. */}
+            <NavMenu>
             {user ? (
               <>
                 <NavLink href="/shelf" className="text-sm text-ink-muted hover:text-ink">
@@ -61,12 +64,13 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                 <NavLink href="/account" className="text-sm text-ink-muted hover:text-ink">
                   Account
                 </NavLink>
-                <p aria-hidden="true" className="text-sm text-ink-muted">|</p>
+                {/* Divider only makes sense in the inline (md+) layout. */}
+                <p aria-hidden="true" className="hidden text-sm text-ink-muted md:block">|</p>
                 <SignOutButton />
               </>
             ) : (
               <>
-                <NavLink href="/sign-in" className="ml-auto text-sm text-ink-muted hover:text-ink">
+                <NavLink href="/sign-in" className="text-sm text-ink-muted hover:text-ink md:ml-auto">
                   Sign in
                 </NavLink>
                 <NavLink href="/sign-up" className="text-sm text-ink-muted hover:text-ink">
@@ -74,6 +78,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                 </NavLink>
               </>
             )}
+            </NavMenu>
           </nav>
         </header>
         {/* id is the skip link's target; tabIndex -1 lets it receive focus programmatically. */}
