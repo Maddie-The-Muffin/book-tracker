@@ -84,6 +84,15 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
             required
           />
           {isSignUp && <p className="mt-1 text-sm text-ink-muted">At least 8 characters.</p>}
+          {/* Sign-in only: entry point to the password reset flow. */}
+          {!isSignUp && (
+            <Link
+              href="/forgot-password"
+              className="mt-1 inline-flex min-h-11 items-center text-sm text-ink-muted underline"
+            >
+              Forgot password?
+            </Link>
+          )}
         </div>
 
         <Button type="submit" disabled={isPending} className="w-full">
