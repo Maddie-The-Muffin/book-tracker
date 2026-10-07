@@ -22,7 +22,7 @@ export function SignOutButton() {
     <button
       type="button"
       onClick={handleClick}
-      className="ml-auto inline-flex min-h-11 cursor-pointer items-center text-sm text-ink-muted hover:text-ink"
+      className="inline-flex min-h-11 cursor-pointer items-center text-sm text-ink-muted hover:text-ink"
     >
       {isSigningOut ? "Signing out..." : "Sign out"}
     </button>

@@ -5,6 +5,7 @@ import { SignOutButton } from "@/components/ui/SignOutButton";
 import { getUser } from "@/lib/session";
 import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
+import { GreetingText } from "@/components/ui/GreetingText";
 
 // Warm serif for headings/brand text.
 const fraunces = Fraunces({
@@ -56,6 +57,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                 <NavLink href="/add" className="text-sm text-ink-muted hover:text-ink">
                   Add a book
                 </NavLink>
+                <GreetingText />
+                <p aria-hidden="true" className="text-sm text-ink-muted">|</p>
                 <SignOutButton />
               </>
             ) : (
