@@ -1,9 +1,9 @@
 # Still to do:
-[ ] Privacy policy
 [ ] check to make sure no attacks can be done via book search bar
 [ ] Resend domain verification (post-deployment)
 
 # Completed:
+[X] Privacy policy (/privacy, linked from footer)
 [X] Account deletion (/account page, password-confirmed)
 [X] Sign-up rate limits (5/hour per IP, DB-backed via Better Auth)
 [X] Password reset (emailed link via Resend)
