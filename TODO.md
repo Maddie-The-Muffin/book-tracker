@@ -2,9 +2,10 @@
 [ ] Privacy policy
 [ ] check to make sure no attacks can be done via book search bar
 [ ] Account deletion
-[ ] Sign-up rate limits
+[ ] Resend domain verification (post-deployment)
 
 # Completed:
+[X] Sign-up rate limits (5/hour per IP, DB-backed via Better Auth)
 [X] Password reset (emailed link via Resend)
 [X] Share card on finish book (share to twitter, facebook, native mobile - things like the book's title, author, rating, notes?)
 [X] Add loading spinner for book search page

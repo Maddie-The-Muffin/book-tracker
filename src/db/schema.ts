@@ -1,4 +1,4 @@
-import { pgTable, text, integer, timestamp, boolean, index, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, bigint, timestamp, boolean, index, uniqueIndex } from "drizzle-orm/pg-core";
 
 export const statusValues = ["want_to_read", "reading", "finished"] as const;
 export type Status = (typeof statusValues)[number];
@@ -58,6 +58,18 @@ export const verification = pgTable("verification", {
   expiresAt: timestamp("expires_at").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Better Auth's rate-limit counters (used because rateLimit.storage is
+// "database": in-memory counters don't work across serverless instances).
+// The export name and the property names (key/count/lastRequest) must match
+// what Better Auth expects.
+export const rateLimit = pgTable("rate_limit", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  key: text("key").notNull().unique(),
+  count: integer("count").notNull(),
+  // Epoch milliseconds, which overflows a 32-bit integer, so use bigint.
+  lastRequest: bigint("last_request", { mode: "number" }).notNull(),
 });
 
 export const books = pgTable(
