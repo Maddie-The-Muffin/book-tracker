@@ -23,6 +23,11 @@ export const auth = betterAuth({
     // Log out other devices after a reset in case the old password was leaked.
     revokeSessionsOnPasswordReset: true,
   },
+  // Lets signed-in users delete their own account (POST /delete-user). With no
+  // sendDeleteAccountVerification set, the user is deleted immediately after the
+  // endpoint checks their password. The DB's ON DELETE CASCADE then removes their
+  // sessions, accounts, books and reflections.
+  user: { deleteUser: { enabled: true } },
   // Rate limiting (on by default in production only). Stored in Postgres so the
   // counters are shared across Vercel's serverless instances.
   rateLimit: {

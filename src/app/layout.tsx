@@ -58,6 +58,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                   Add a book
                 </NavLink>
                 <GreetingText />
+                <NavLink href="/account" className="text-sm text-ink-muted hover:text-ink">
+                  Account
+                </NavLink>
                 <p aria-hidden="true" className="text-sm text-ink-muted">|</p>
                 <SignOutButton />
               </>
