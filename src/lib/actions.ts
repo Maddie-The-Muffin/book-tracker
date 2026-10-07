@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { books, bookReflections, statusValues } from "@/db/schema";
 import { requireUser } from "@/lib/session";
+import { LIMITS, parseRating, safeCoverUrl, withinLimit } from "@/lib/limits";
 
 // Throws unless the book exists AND belongs to this user. Used before touching
 // book_reflections, which has no owner column of its own (it's reached only
@@ -30,6 +31,14 @@ export async function addBook(formData: FormData) {
   if (!openLibraryId || !title || !author) {
     throw new Error("Missing required book fields");
   }
+  // These come from hidden form fields, so a caller can forge them: cap sizes.
+  if (
+    openLibraryId.length > LIMITS.openLibraryId ||
+    !withinLimit(title, LIMITS.title) ||
+    !withinLimit(author, LIMITS.author)
+  ) {
+    throw new Error("Book fields too long");
+  }
 
   // Guard against duplicates: if this book is already on THIS USER's shelf
   // (e.g. from a repeat click that slipped past the disabled button), send
@@ -46,7 +55,7 @@ export async function addBook(formData: FormData) {
 
   const [book] = await db
     .insert(books)
-    .values({ userId: user.id, openLibraryId, title, author, coverUrl: coverUrl || null })
+    .values({ userId: user.id, openLibraryId, title, author, coverUrl: safeCoverUrl(coverUrl) })
     .returning({ id: books.id });
 
   revalidatePath("/shelf");
@@ -74,7 +83,11 @@ export async function updateBook(
     throw new Error("Invalid status");
   }
 
-  const rating = status === "want_to_read" ? null : ratingRaw ? Number(ratingRaw) : null;
+  // Reject anything but 1-5 (or empty); "want to read" books never have a rating.
+  const parsedRating = parseRating(ratingRaw ?? "");
+  if (parsedRating === undefined) throw new Error("Invalid rating");
+  const rating = status === "want_to_read" ? null : parsedRating;
+  if (!withinLimit(notes ?? "", LIMITS.notes)) throw new Error("Notes too long");
   const currentDate : Date = new Date();
   // Set inside the try block below if this update is the one transitioning
   // the book into "finished" for the first time.
@@ -144,6 +157,12 @@ export async function saveReflection(
   const wouldRecommendRaw = formData.get("wouldRecommend") as string;
   // HTML form values are always strings; "" means "no answer" (null).
   const wouldRecommend = wouldRecommendRaw === "" ? null : wouldRecommendRaw === "true";
+  if (
+    !withinLimit(favoritePart ?? "", LIMITS.reflection) ||
+    !withinLimit(leastFavoritePart ?? "", LIMITS.reflection)
+  ) {
+    throw new Error("Reflection too long");
+  }
 
   try {
     await db

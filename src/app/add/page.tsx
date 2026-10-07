@@ -7,6 +7,7 @@ import { books } from "@/db/schema";
 import { searchOpenLibrary } from "@/lib/open-library";
 import { addBook } from "@/lib/actions";
 import { requireUser } from "@/lib/session";
+import { LIMITS } from "@/lib/limits";
 import { SearchButton } from "./search-button";
 import { AddButton } from "./add-button";
 import { Card } from "@/components/ui/Card";
@@ -22,7 +23,9 @@ export async function generateMetadata(props: PageProps<"/add">): Promise<Metada
 export default async function AddBookPage(props: PageProps<"/add">) {
   const user = await requireUser();
   const { q } = await props.searchParams;
-  const query = Array.isArray(q) ? q[0] : q;
+  // maxLength only limits the form; the URL can carry anything, so cap it here too.
+  const rawQuery = Array.isArray(q) ? q[0] : q;
+  const query = rawQuery?.slice(0, LIMITS.searchQuery);
 
   const results = query ? await searchOpenLibrary(query) : {result: [], error: null};
 
@@ -53,6 +56,7 @@ export default async function AddBookPage(props: PageProps<"/add">) {
           aria-label="Search by title or author"
           defaultValue={query ?? ""}
           placeholder="Search by title or author..."
+          maxLength={LIMITS.searchQuery}
           className="flex-1"
         />
         <SearchButton />

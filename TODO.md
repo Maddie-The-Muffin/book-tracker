@@ -1,8 +1,8 @@
 # Still to do:
-[ ] check to make sure no attacks can be done via book search bar
 [ ] Resend domain verification (post-deployment)
 
 # Completed:
+[X] Book search bar security check (cover URL allow-list, input length limits, rating validation)
 [X] Privacy policy (/privacy, linked from footer)
 [X] Account deletion (/account page, password-confirmed)
 [X] Sign-up rate limits (5/hour per IP, DB-backed via Better Auth)

@@ -5,6 +5,7 @@ import type { BookReflection } from "@/db/schema";
 import { saveReflection, skipReflection, type SaveReflectionState } from "@/lib/actions";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { LIMITS } from "@/lib/limits";
 import { Textarea, Select } from "@/components/ui/fields";
 
 const initialState: SaveReflectionState = { error: null };
@@ -73,6 +74,7 @@ export function Reflection({
             name="favoritePart"
             defaultValue={reflection?.favoritePart ?? ""}
             rows={3}
+            maxLength={LIMITS.reflection}
           />
         </div>
 
@@ -85,6 +87,7 @@ export function Reflection({
             name="leastFavoritePart"
             defaultValue={reflection?.leastFavoritePart ?? ""}
             rows={3}
+            maxLength={LIMITS.reflection}
           />
         </div>
 

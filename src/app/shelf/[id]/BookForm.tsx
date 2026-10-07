@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { statusValues, type Book, type Status } from "@/db/schema";
 import { statusLabels } from "@/lib/format";
 import { updateBook, type UpdateBookState } from "@/lib/actions";
+import { LIMITS } from "@/lib/limits";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Select, Textarea } from "@/components/ui/fields";
@@ -69,7 +70,13 @@ export function BookForm({ book }: { book: Book }) {
           <label className="mb-1 block text-sm font-medium" htmlFor="notes">
             Notes
           </label>
-          <Textarea id="notes" name="notes" defaultValue={book.notes ?? ""} rows={4} />
+          <Textarea
+            id="notes"
+            name="notes"
+            defaultValue={book.notes ?? ""}
+            rows={4}
+            maxLength={LIMITS.notes}
+          />
         </div>
 
         <Button type="submit" disabled={isPending}>
