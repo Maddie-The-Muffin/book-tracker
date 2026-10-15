@@ -9,7 +9,7 @@ import { sendPasswordResetEmail } from "@/lib/email";
 // stored in our own Neon database through the Drizzle adapter.
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg", schema }),
-  // Email + password sign-in, plus password reset via an emailed link (Resend).
+  // Email + password sign-in, plus password reset via an emailed link (Gmail SMTP).
   emailAndPassword: {
     enabled: true,
     // Called when a user requests a reset; `url` is the one-time link
@@ -34,7 +34,7 @@ export const auth = betterAuth({
     storage: "database",
     customRules: {
       // Tighter than the default (3 per 10s) so one IP can't mass-create
-      // accounts: 5 sign-ups per hour. Also protects the Resend email quota.
+      // accounts: 5 sign-ups per hour. Also protects the Gmail daily sending quota.
       "/sign-up/email": { window: 60 * 60, max: 5 },
     },
   },

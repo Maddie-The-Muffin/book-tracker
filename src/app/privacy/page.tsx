@@ -77,8 +77,8 @@ export default function PrivacyPage() {
             <strong>Vercel</strong> hosts the website.
           </li>
           <li>
-            <strong>Resend</strong> delivers password-reset emails, so it receives your email
-            address when you request one.
+            <strong>Google (Gmail)</strong> delivers password-reset emails, so it receives your
+            email address when you request one.
           </li>
           <li>
             <strong>Open Library</strong> powers book search. The search terms you type on the Add
