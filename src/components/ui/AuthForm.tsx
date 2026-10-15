@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -11,7 +10,6 @@ import { Input } from "@/components/ui/fields";
 // One form for both /sign-in and /sign-up; `mode` toggles the extra name field,
 // the Better Auth call, and the copy.
 export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
-  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
   const isSignUp = mode === "sign-up";
@@ -37,8 +35,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
     }
 
     // Session cookie is set; refresh so server components re-render signed in.
-    router.push("/");
-    router.refresh();
+    window.location.assign("/");
   }
 
   return (
