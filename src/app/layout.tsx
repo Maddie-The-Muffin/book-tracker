@@ -25,6 +25,13 @@ export const metadata: Metadata = {
   // Distinct titles tell screen reader users where they landed after navigating.
   title: { default: "Book Tracker", template: "%s | Book Tracker" },
   description: "A personal reading log.",
+  openGraph: {
+    type: "website",
+    url: "https://a-book-tracker.vercel.app",
+    title: "Book Tracker",
+    description: "A personal reading log.",
+    siteName: "Book Tracker"
+  }
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
