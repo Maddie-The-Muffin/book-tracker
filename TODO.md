@@ -1,5 +1,5 @@
 # Still to do:
-[ ] Resend domain verification (post-deployment)
+Celebrate!
 
 # Completed:
 [X] Book search bar security check (cover URL allow-list, input length limits, rating validation)
