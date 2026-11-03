@@ -36,7 +36,7 @@ Built as a portfolio project using Next.js, Drizzle, Neon, and Claude Code.
 ### Setup
 
 ```bash
-git clone <your-fork-or-repo-url>
+git clone https://github.com/Maddie-The-Muffin/book-tracker.git
 cd book-tracker
 npm install
 cp .env.example .env.local
