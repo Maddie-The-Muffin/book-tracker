@@ -13,9 +13,15 @@ export function Footer() {
                 </a>
             </p>
             <p className="inline text-center">
-                <Link href="/privacy" className="inline-flex min-h-11 items-center text-sm text-ink-muted underline">
+                <Link href="/privacy" className="inline-flex min-h-11 items-center text-ink-muted underline">
                     Privacy Policy
                 </Link>
+            </p>
+            <p className="inline text-center text-ink-muted">
+                Questions? Bugs? Email me at <a 
+                href="mailto:maddietavdev@gmail.com" 
+                className="text-ink font-bold underline inline-flex min-h-11 items-center">maddietavdev@gmail.com
+                </a>
             </p>
         </div>
     </footer>
